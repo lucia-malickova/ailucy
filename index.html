@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lucy | Digital Twin</title>
   
-  <!-- Ikonka stránky (Favicon) - Tu vložíš vyrezaný stred tvojho loga -->
-  <link rel="icon" type="image/png" href="tvoje-logo-ai-stred.png">
+  <!-- Oklamanie cache pridaním ?v=3 -->
+  <link rel="icon" type="image/png" href="tvoje-logo-ai-stred.png?v=3">
   
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;600&display=swap" rel="stylesheet">
   <style>
@@ -16,6 +16,7 @@
       --text-main: #ffffff;
       --text-muted: #666666;
       --border: #1a1a1a;
+      --gold: #d4af37; /* Pridaný zlatý akcent z loga */
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,7 +40,7 @@
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       width: 100vw; height: 100vh;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 60%);
+      background: radial-gradient(circle at center, rgba(212, 175, 55, 0.03) 0%, transparent 60%);
       z-index: -1;
       pointer-events: none;
     }
@@ -53,7 +54,22 @@
       z-index: 1;
     }
 
-    .header { text-align: center; }
+    .header { 
+      text-align: center; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Štýl pre vložené logo */
+    .mia-logo {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      margin-bottom: 24px;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.15); /* Jemná zlatá žiara */
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
 
     h1 {
       font-weight: 300;
@@ -71,10 +87,9 @@
       color: var(--text-muted);
     }
 
-    /* Hypnotický pulzujúci Monolit */
     @keyframes slow-breath {
       0% { box-shadow: 0 0 15px rgba(255,255,255,0.02); border-color: #1a1a1a; }
-      50% { box-shadow: 0 0 40px rgba(255,255,255,0.1); border-color: #333333; }
+      50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.08); border-color: #333333; }
       100% { box-shadow: 0 0 15px rgba(255,255,255,0.02); border-color: #1a1a1a; }
     }
 
@@ -100,9 +115,9 @@
     .dot {
       width: 5px;
       height: 5px;
-      background-color: #ffffff;
+      background-color: var(--gold);
       border-radius: 50%;
-      box-shadow: 0 0 10px #ffffff;
+      box-shadow: 0 0 10px var(--gold);
     }
 
     .message {
@@ -111,7 +126,7 @@
       line-height: 1.7;
       color: #b3b3b3;
       margin-bottom: 32px;
-      min-height: 100px; /* Fixná výška, aby text neskákal pri písaní */
+      min-height: 100px;
     }
 
     .message b {
@@ -119,7 +134,6 @@
       color: #ffffff;
     }
 
-    /* Čisté navigačné línie */
     .questions {
       display: flex;
       flex-direction: column;
@@ -145,7 +159,6 @@
     .question-btn:hover { color: #ffffff; padding-left: 8px; }
     .question-btn:last-child { border-bottom: 1px solid var(--border); }
 
-    /* Hlavné akcie */
     .actions {
       display: flex;
       flex-direction: column;
@@ -177,7 +190,6 @@
     .btn-primary { background: #ffffff; color: #000000; }
     .btn-primary:hover { background: transparent; color: #ffffff; border-color: #ffffff; }
 
-    /* Blikajúci kurzor pre efekt písania */
     .cursor::after {
       content: '█';
       animation: blink 1s step-start infinite;
@@ -191,6 +203,9 @@
 <div class="container">
   
   <div class="header">
+    <!-- Pridané logo M.I.A. priamo do dizajnu -->
+    <img src="tvoje-logo-ai-stred.png?v=3" alt="M.I.A. Logo" class="mia-logo" onerror="this.style.display='none'">
+    
     <h1>LUCY AI</h1>
     <div class="subtitle">Digital Twin // Node Active</div>
   </div>
@@ -220,7 +235,6 @@
 </div>
 
 <script>
-  // Presné kontaktné údaje podľa zadania
   function downloadVCard() {
     const vcardData = 
 `BEGIN:VCARD
@@ -243,11 +257,10 @@ END:VCARD`;
     link.click();
   }
 
-  // Hypnotický efekt postupného písania textu (Typewriter)
   let typingTimeout;
   function typeReply(text) {
     const out = document.getElementById('lucy-output');
-    clearTimeout(typingTimeout); // Zastaví predchádzajúce písanie
+    clearTimeout(typingTimeout);
     out.innerHTML = '';
     let i = 0;
     
@@ -255,7 +268,7 @@ END:VCARD`;
       if (i < text.length) {
         out.innerHTML += text.charAt(i);
         i++;
-        typingTimeout = setTimeout(typeWriter, 15); // Rýchlosť písania (15ms na znak)
+        typingTimeout = setTimeout(typeWriter, 15);
       }
     }
     typeWriter();
