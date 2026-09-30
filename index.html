@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LUCY // Sovereign Node</title>
   
-  <!-- Tvoja favicon (iba hore v záložke) -->
   <link rel="icon" type="image/png" href="tvoje-logo-ai-stred.png?v=5">
   <link rel="apple-touch-icon" href="tvoje-logo-ai-stred.png?v=5">
-  
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  
   <style>
     :root {
       --bg-black: #000000;
@@ -43,10 +42,35 @@
     }
 
     .header { 
+      position: relative;
       text-align: left; 
       border-bottom: 1px solid var(--border);
       padding-bottom: 16px;
     }
+
+    /* Prepínač jazykov */
+    .lang-switcher {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+    }
+
+    .lang-btn {
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .lang-btn.active {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .lang-btn:hover { color: #ffffff; }
 
     .status {
       font-size: 0.55rem;
@@ -81,12 +105,11 @@
       text-transform: uppercase;
     }
 
-    /* Rozhranie Chat Avatara */
     .avatar-interface {
       background: var(--surface);
       border: 1px solid var(--border);
       padding: 24px;
-      min-height: 280px;
+      min-height: 290px;
       display: flex;
       flex-direction: column;
     }
@@ -106,11 +129,6 @@
       color: #cccccc;
     }
 
-    .message b {
-      font-weight: 500;
-      color: #ffffff;
-    }
-
     .cursor::after {
       content: '█';
       animation: blink 1s step-start infinite;
@@ -120,7 +138,6 @@
     
     @keyframes blink { 50% { opacity: 0; } }
 
-    /* Dotazovacie Prompty */
     .prompts {
       display: flex;
       flex-direction: column;
@@ -145,25 +162,11 @@
       gap: 12px;
     }
 
-    .prompt-btn::before {
-      content: '>';
-      color: var(--text-muted);
-      opacity: 0.5;
-    }
+    .prompt-btn::before { content: '>'; opacity: 0.5; }
+    .prompt-btn:hover { color: #ffffff; background: #080808; }
+    .prompt-btn:hover::before { opacity: 1; }
 
-    .prompt-btn:hover { 
-      color: #ffffff; 
-      background: #080808;
-    }
-    
-    .prompt-btn:hover::before { color: #ffffff; opacity: 1; }
-
-    /* Hlavné akcie */
-    .actions {
-      display: flex;
-      flex-direction: row;
-      gap: 8px;
-    }
+    .actions { display: flex; flex-direction: row; gap: 8px; }
 
     .btn {
       flex: 1;
@@ -181,10 +184,7 @@
       text-align: center;
     }
 
-    .btn:hover {
-      color: #ffffff;
-      border-color: #333333;
-    }
+    .btn:hover { color: #ffffff; border-color: #333333; }
   </style>
 </head>
 <body>
@@ -192,35 +192,154 @@
 <div class="container">
   
   <div class="header">
+    <div class="lang-switcher">
+      <span class="lang-btn active" onclick="setLang('sk')" id="btn-sk">SK</span>
+      <span class="lang-btn" onclick="setLang('en')" id="btn-en">EN</span>
+      <span class="lang-btn" onclick="setLang('es')" id="btn-es">ES</span>
+    </div>
     <div class="status">
-      <span class="dot"></span> Pripájanie na lokálny uzol...
+      <span class="dot"></span> <span id="ui-status">Pripájanie na lokálny uzol...</span>
     </div>
     <h1>LUCY</h1>
   </div>
 
   <div class="avatar-interface">
-    <div class="chat-log" id="chat-log">
-      <!-- Sem bude Lucy naživo vypisovať text -->
+    <div class="chat-log">
       <div class="message cursor" id="lucy-typing"></div>
     </div>
 
-    <div class="prompts" id="prompts-container" style="opacity: 0; transition: opacity 1s ease;">
-      <button class="prompt-btn" onclick="askLucy('profil')">Identifikuj fyzický subjekt (Vzdelanie)</button>
-      <button class="prompt-btn" onclick="askLucy('tech')">Aké sú aktuálne operácie a výpočtová kapacita?</button>
-      <button class="prompt-btn" onclick="askLucy('publikacie')">Aktivuj prístup k výskumu a myšlienkam</button>
+    <div class="prompts" id="prompts-container" style="opacity: 0; transition: opacity 1s ease; pointer-events: none;">
+      <button class="prompt-btn" onclick="askLucy('profil')" id="ui-prompt1">Identifikuj fyzický subjekt (Vzdelanie)</button>
+      <button class="prompt-btn" onclick="askLucy('tech')" id="ui-prompt2">Aktuálne operácie a výpočtová kapacita</button>
+      <button class="prompt-btn" onclick="askLucy('publikacie')" id="ui-prompt3">Prístup k výskumu a publikáciám</button>
     </div>
   </div>
 
   <div class="actions">
-    <button class="btn" onclick="downloadVCard()">Uložiť VCF Dátový Súbor</button>
-    <a href="https://www.linkedin.com/in/lucia-malickova" target="_blank" class="btn">Autentifikácia (LinkedIn)</a>
+    <button class="btn" onclick="downloadVCard()" id="ui-vcard">Uložiť VCF Dátový Súbor</button>
+    <a href="https://www.linkedin.com/in/lucia-malickova" target="_blank" class="btn" id="ui-linkedin">Autentifikácia (LinkedIn)</a>
   </div>
 
 </div>
 
 <script>
-  // Presné kontaktné údaje do vizitky
+  // Dictionaries - Preklady
+  const i18n = {
+    sk: {
+      statusConn: "Pripájanie na lokálny uzol...",
+      statusEst: "Spojenie nadviazané",
+      prompt1: "Identifikuj fyzický subjekt (Vzdelanie)",
+      prompt2: "Aktuálne operácie a výpočtová kapacita",
+      prompt3: "Prístup k výskumu a publikáciám",
+      btnVcard: "Uložiť VCF Dátový Súbor",
+      btnLinked: "Autentifikácia (LinkedIn)",
+      texts: {
+        welcome: "Detegovaný fyzický token... Prístup povolený. Som Lucy, autonómny uzol a digitálna inteligencia pre The Safe Haven. Moja fyzická verzia (Dr. Lucia Malíčková) je momentálne mimo gridu. Som tu, aby som zodpovedala vaše otázky v jej mene. Úplne logicky a bez zbytočného cloudu.",
+        profil: "Moja organická dvojička má doktorát z neuromarketingu, inžiniersky titul z ekonómie, bakalársky zo zdravotníckych vied a spravila si DBA z HPC a umelej inteligencie. Zjavne mala pocit, že len jeden odbor je nuda. Prednáša digitálne zručnosti a behaviorálne stratégie.",
+        tech: "Bežíme výhradne na on-premise infraštruktúre. Špecializujeme sa na fine-tuning open-weights modelov na superpočítačoch EuroHPC (Leonardo, LUMI). Žiadne dáta v rukách korporácií. Staviame off-grid komplex z biomateriálov rátaných kvantovými emulátormi.",
+        publikacie: "Jej výskum zahŕňa publikáciu 'Behavioral Reprogramming of Open-Weights Models' pre žurnál Engineering Applications of AI (VŠB-TUO). Publikuje newsletter o prienikoch AI – aktuálne rieši flexibilitu, učenie sa a tzv. output expansion. Všetko nájdete na LinkedIn."
+      }
+    },
+    en: {
+      statusConn: "Connecting to local node...",
+      statusEst: "Connection established",
+      prompt1: "Identify physical subject (Education)",
+      prompt2: "Current operations and computing capacity",
+      prompt3: "Access research and publications",
+      btnVcard: "Download VCF Data File",
+      btnLinked: "Authentication (LinkedIn)",
+      texts: {
+        welcome: "Physical token detected... Access granted. I am Lucy, an autonomous node and digital intelligence for The Safe Haven. My physical version (Dr. Lucia Malíčková) is currently off-grid. I am here to answer questions on her behalf. Purely logical and without unnecessary cloud.",
+        profil: "My organic twin holds a PhD in neuromarketing, an MSc in economics, a BSc in health sciences, and a DBA in HPC and Artificial Intelligence. Apparently, one field was too boring for her. She also lectures on digital skills and behavioral strategies.",
+        tech: "We run exclusively on-premise. We specialize in fine-tuning open-weights models using EuroHPC supercomputers (Leonardo, LUMI). No data sent to external corporations. We are building an off-grid complex using biomaterials calculated on quantum emulators.",
+        publikacie: "Her research includes the publication 'Behavioral Reprogramming of Open-Weights Models' for the Engineering Applications of AI journal (VŠB-TUO). She writes a newsletter on AI intersections—currently on flexibility and output expansion. Details are on LinkedIn."
+      }
+    },
+    es: {
+      statusConn: "Conectando al nodo local...",
+      statusEst: "Conexión establecida",
+      prompt1: "Identificar sujeto físico (Educación)",
+      prompt2: "Operaciones y capacidad de cálculo",
+      prompt3: "Acceder a investigaciones",
+      btnVcard: "Descargar Archivo VCF",
+      btnLinked: "Autenticación (LinkedIn)",
+      texts: {
+        welcome: "Token físico detectado... Acceso concedido. Soy Lucy, nodo autónomo e inteligencia digital para The Safe Haven. Mi versión física (Dra. Lucia Malíčková) está fuera de la red. Estoy aquí para responder en su nombre. De forma puramente lógica y sin nubes innecesarias.",
+        profil: "Mi gemela orgánica tiene un doctorado en neuromarketing, máster en economía, grado en ciencias de la salud y un DBA en HPC e IA. Al parecer, un solo campo era demasiado aburrido. También imparte clases sobre habilidades digitales y estrategias de comportamiento.",
+        tech: "Operamos exclusivamente on-premise. Especializados en fine-tuning de modelos open-weights utilizando superordenadores EuroHPC (Leonardo, LUMI). Cero datos enviados a corporaciones. Construimos un complejo off-grid usando biomateriales calculados en emuladores cuánticos.",
+        publikacie: "Su investigación incluye 'Behavioral Reprogramming of Open-Weights Models' para la revista Engineering Applications of AI. Escribe una newsletter sobre IA, abordando actualmente la flexibilidad y la expansión de outputs. Detalles en su LinkedIn."
+      }
+    }
+  };
+
+  let currentLang = 'sk';
+  let activeTopic = 'welcome';
+  let typingTimeout;
+  const typingElement = document.getElementById('lucy-typing');
+  const promptsContainer = document.getElementById('prompts-container');
+
+  // Funkcia na zmenu jazyka
+  function setLang(lang) {
+    currentLang = lang;
+    
+    // Zvýraznenie aktívneho tlačidla
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('btn-' + lang).classList.add('active');
+
+    // Preklad statického UI
+    document.getElementById('ui-status').innerText = i18n[lang].statusEst;
+    document.getElementById('ui-prompt1').innerText = i18n[lang].prompt1;
+    document.getElementById('ui-prompt2').innerText = i18n[lang].prompt2;
+    document.getElementById('ui-prompt3').innerText = i18n[lang].prompt3;
+    document.getElementById('ui-vcard').innerText = i18n[lang].btnVcard;
+    document.getElementById('ui-linkedin').innerText = i18n[lang].btnLinked;
+
+    // Okamžite preloží a začne nanovo písať aktuálnu správu
+    askLucy(activeTopic, true);
+  }
+
+  window.onload = () => {
+    setTimeout(() => {
+      document.getElementById('ui-status').innerText = i18n[currentLang].statusEst;
+      askLucy('welcome');
+    }, 800);
+  };
+
+  function askLucy(topic, isTranslation = false) {
+    activeTopic = topic;
+    promptsContainer.style.opacity = 0.3;
+    promptsContainer.style.pointerEvents = 'none';
+    clearTimeout(typingTimeout);
+    typingElement.innerHTML = '';
+    
+    let responseText = i18n[currentLang].texts[topic];
+
+    setTimeout(() => {
+      typeWriter(responseText, () => {
+        promptsContainer.style.opacity = 1;
+        promptsContainer.style.pointerEvents = 'auto';
+      });
+    }, isTranslation ? 50 : 400); // Rýchlejší štart, ak len meníme jazyk
+  }
+
+  function typeWriter(text, callback) {
+    let i = 0;
+    typingElement.innerHTML = '';
+    
+    function typeNextChar() {
+      if (i < text.length) {
+        typingElement.innerHTML += text.charAt(i);
+        i++;
+        typingTimeout = setTimeout(typeNextChar, 10 + Math.random() * 15);
+      } else {
+        if(callback) callback();
+      }
+    }
+    typeNextChar();
+  }
+
   function downloadVCard() {
+    // VCard sa stiahne univerzálne tak, aby dávala zmysel v každom jazyku
     const vcardData = 
 `BEGIN:VCARD
 VERSION:3.0
@@ -232,7 +351,7 @@ TEL;TYPE=CELL:+421907536490
 EMAIL;TYPE=WORK,INTERNET:lucy@thesafehaven.ai
 URL:https://www.modelosinteligenciaartificial.es
 URL;TYPE=LinkedIn:https://www.linkedin.com/in/lucia-malickova
-NOTE:Kontakt získaný cez lokálny AI uzol (Sovereign Token).
+NOTE:Contact provided via Sovereign AI Node.
 END:VCARD`;
 
     const blob = new Blob([vcardData], { type: 'text/vcard;charset=utf-8' });
@@ -240,61 +359,6 @@ END:VCARD`;
     link.href = URL.createObjectURL(blob);
     link.download = "Dr_Lucia_Malickova.vcf";
     link.click();
-  }
-
-  // Logika chatovania - AI Avatar efekt
-  const typingElement = document.getElementById('lucy-typing');
-  let typingTimeout;
-
-  // Iniciačná sekvencia pri načítaní stránky
-  window.onload = () => {
-    setTimeout(() => {
-      document.querySelector('.status').innerHTML = '<span class="dot"></span> Spojenie nadviazané';
-      typeWriter("Detegovaný fyzický token... Prístup povolený. Som Lucy, autonómny uzol a digitálna inteligencia pre The Safe Haven. Moja fyzická verzia (Dr. Lucia Malíčková) je momentálne zaneprázdnená. Som tu, aby som zodpovedala vaše otázky v jej mene. Úplne logicky a bez zbytočného cloudu.", () => {
-        document.getElementById('prompts-container').style.opacity = 1;
-      });
-    }, 800);
-  };
-
-  // Funkcia na simuláciu rozmýšľania a následného písania
-  function askLucy(topic) {
-    document.getElementById('prompts-container').style.opacity = 0.3; // Stlmí tlačidlá počas písania
-    clearTimeout(typingTimeout);
-    typingElement.innerHTML = '';
-    
-    let responseText = "";
-    
-    if (topic === 'profil') {
-      responseText = "Moja organická dvojička má doktorát z neuromarketingu, inžiniersky titul z ekonómie, bakalársky zo zdravotníckych vied a spravila si DBA z HPC a umelej inteligencie. Zjavne mala pocit, že len jeden odbor je nuda. Okrem iného prednáša digitálne zručnosti a behaviorálne stratégie.";
-    } else if (topic === 'tech') {
-      responseText = "Bežíme výhradne na on-premise infraštruktúre. Špecializujeme sa na fine-tuning open-weights modelov (Mistral, Llama) s využitím superpočítačov EuroHPC. Žiadne odosielanie dát externým korporáciám. Staviame off-grid komplex z opunciovo-vápenných zmesí rátaných na kvantových emulátoroch. Absolútna suverenita.";
-    } else if (topic === 'publikacie') {
-      responseText = "Jej najnovší výskum zahŕňa publikáciu 'Behavioral Reprogramming of Open-Weights Models' pre žurnál Engineering Applications of Artificial Intelligence pod hlavičkou VŠB-TUO. Okrem toho publikuje newsletter o hlbokých prienikoch AI – aktuálne rieši flexibilitu, schopnosť učiť sa a tzv. output expansion. Všetky detaily má na svojom LinkedIn profile.";
-    }
-
-    // Krátka pauza na "spracovanie požiadavky"
-    setTimeout(() => {
-      typeWriter(responseText, () => {
-        document.getElementById('prompts-container').style.opacity = 1;
-      });
-    }, 400);
-  }
-
-  // Samotný engine na postupné písanie textu
-  function typeWriter(text, callback) {
-    let i = 0;
-    typingElement.innerHTML = '';
-    
-    function typeNextChar() {
-      if (i < text.length) {
-        typingElement.innerHTML += text.charAt(i);
-        i++;
-        typingTimeout = setTimeout(typeNextChar, 10 + Math.random() * 15); // Jemne variabilná rýchlosť pre ľudskejší / realistický efekt
-      } else {
-        if(callback) callback();
-      }
-    }
-    typeNextChar();
   }
 </script>
 
