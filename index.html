@@ -3,81 +3,197 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lucy // Sovereign AI Node</title>
+  <title>Lucy // The Safe Haven</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #090a0c;
-      --card: #13161a;
-      --border: #222930;
-      --accent: #10b981; /* Smaragdová zelená */
-      --text: #e5e7eb;
-      --muted: #6b7280;
+      --basalt-black: #080808;
+      --volcanic-grey: #121212;
+      --sand-light: #E8E3D9;
+      --sand-dark: #A39B8B;
+      --emerald: #057A55;
+      --glass-bg: rgba(20, 20, 20, 0.6);
+      --glass-border: rgba(232, 227, 217, 0.08);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
-    body { background-color: var(--bg); color: var(--text); padding: 24px 16px; min-height: 100vh; display: flex; justify-content: center; }
-    .container { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 20px; }
-    
-    /* Hlavička uzla */
-    .badge { display: inline-flex; align-items: center; gap: 8px; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); padding: 4px 10px; border-radius: 9999px; }
-    .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-    h1 { font-size: 1.4rem; font-weight: 700; color: #fff; margin-top: 8px; }
-    p.sub { font-size: 0.85rem; color: var(--muted); }
 
-    /* Rýchle akcie (Uložiť kontakt & LinkedIn) */
-    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .btn { display: flex; align-items: center; justify-content: center; padding: 12px 14px; border-radius: 10px; text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; cursor: pointer; border: none; transition: transform 0.1s ease; }
-    .btn:active { transform: scale(0.97); }
-    .btn-primary { background: var(--accent); color: #041f16; }
-    .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Montserrat', sans-serif; 
+    }
 
-    /* Terminál s Lucy */
-    .terminal { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-    .term-header { font-size: 0.75rem; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; justify-content: space-between; }
-    .msg { font-size: 0.9rem; line-height: 1.5; color: #d1d5db; }
-    .msg b { color: #fff; }
+    body { 
+      background: radial-gradient(circle at top, var(--volcanic-grey) 0%, var(--basalt-black) 100%);
+      color: var(--sand-light); 
+      min-height: 100vh; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+      padding: 24px;
+    }
+
+    .container { 
+      width: 100%; 
+      max-width: 420px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 32px; 
+    }
+
+    /* Hlavička - Minimalistická a architektonická */
+    .header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 10px var(--emerald);
+      margin-bottom: 4px;
+    }
+
+    h1 { 
+      font-weight: 200; 
+      font-size: 1.5rem; 
+      letter-spacing: 0.15em; 
+      text-transform: uppercase; 
+    }
     
-    /* Navigačné otázky */
-    .chips { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
-    .chip { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; color: #9ca3af; font-size: 0.85rem; text-align: left; cursor: pointer; }
-    .chip:hover { border-color: var(--accent); color: #fff; }
+    h1 b { font-weight: 600; }
+
+    .subtitle { 
+      font-size: 0.75rem; 
+      color: var(--sand-dark); 
+      letter-spacing: 0.2em; 
+      text-transform: uppercase; 
+    }
+
+    /* Lucy Interface - Glassmorphism & Zaha Hadid organické krivky */
+    .ai-interface {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px; /* Plynulá organická krivka */
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .ai-header {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--emerald);
+      text-transform: uppercase;
+      font-weight: 600;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 12px;
+    }
+
+    .ai-message {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--sand-light);
+      font-weight: 200;
+    }
+
+    .ai-message b {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Organické tlačidlá */
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--emerald);
+      color: #000;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--sand-light);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--sand-dark);
+    }
+
+    .arrow { font-weight: 400; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- Status uzla -->
-  <div>
-    <span class="badge"><span class="pulse"></span> Sovereign Node // Online</span>
-    <h1>Modelos Inteligencia Artificial</h1>
-    <p class="sub">The Safe Haven • High-Performance Computing • Local AI</p>
+  
+  <div class="header">
+    <div><span class="status-dot"></span></div>
+    <h1>The <b>Safe Haven</b></h1>
+    <div class="subtitle">Modelos Inteligencia Artificial</div>
   </div>
 
-  <!-- Okamžité kontaktné akcie -->
-  <div class="actions">
-    <button class="btn btn-primary" onclick="downloadVCard()">Uložiť kontakt (vCard)</button>
-    <a class="btn btn-secondary" href="https://www.linkedin.com/in/TVOJ-LINKEDIN" target="_blank">LinkedIn Profil</a>
-  </div>
-
-  <!-- Lucy Terminal -->
-  <div class="terminal">
-    <div class="term-header">
-      <span>AI AGENT: LUCY</span>
-      <span>STATUS: ACTIVE</span>
-    </div>
-    <div class="msg" id="lucy-output">
-      Ahoj. Detegovala som fyzický token. Som <b>Lucy</b>, lokálna inteligencia prepojená s projektmi Lucie Malíčkovej. Ulož si kontakt vyššie, alebo si vyber, čo ťa zaujíma:
+  <div class="ai-interface">
+    <div class="ai-header">AI Concierge // Node Active</div>
+    
+    <div class="ai-message" id="lucy-output">
+      Detegovaný autorizovaný kľúč. Som <b>Lucy</b>. Zabezpečujem on-premise inteligenciu a správu off-grid uzlov. Pridaj si kontakt na zakladateľku, alebo si vyber tému.
     </div>
 
-    <div class="chips">
-      <button class="chip" onclick="reply('safehaven')">➔ Čo je projekt The Safe Haven?</button>
-      <button class="chip" onclick="reply('tech')">➔ Na akej infraštruktúre bežíme?</button>
-      <button class="chip" onclick="reply('collab')">➔ Možnosti spolupráce a alokácie</button>
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="reply('architecture')">
+        <span>Koncepcia & Architektúra</span> <span class="arrow">→</span>
+      </button>
+      <button class="btn btn-secondary" onclick="reply('ai')">
+        <span>Lokálne AI modely</span> <span class="arrow">→</span>
+      </button>
     </div>
   </div>
+
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="downloadVCard()">
+      <span>Uložiť kontakt do telefónu</span> <span class="arrow">↓</span>
+    </button>
+    <a href="https://www.linkedin.com/in/TVOJ-LINKEDIN" target="_blank" class="btn btn-secondary">
+      <span>Spojiť sa na LinkedIn</span> <span class="arrow">↗</span>
+    </a>
+  </div>
+
 </div>
 
 <script>
-  // Funkcia na okamžité stiahnutie VCF vizitky do telefónu
   function downloadVCard() {
     const vcardData = 
 `BEGIN:VCARD
@@ -86,28 +202,25 @@ N:Malíčková;Lucia;Dr.;;
 FN:Dr. Lucia Malíčková
 ORG:Modelos Inteligencia Artificial S.L.
 TITLE:Founder & AI Architect
-EMAIL;TYPE=INTERNET:kontakt@tvojadomena.com
-URL:https://tvojadomena.com
+EMAIL;TYPE=INTERNET:kontakt@ailucy.es
+URL:https://thesafehaven.ai
 URL;TYPE=LinkedIn:https://www.linkedin.com/in/TVOJ-LINKEDIN
-NOTE:The Safe Haven Node - Suverénna lokálna AI & Bio-architektúra
+NOTE:The Safe Haven - Suverénna lokálna AI & Off-grid bio-architektúra
 END:VCARD`;
 
     const blob = new Blob([vcardData], { type: 'text/vcard;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = "Lucia_Malickova.vcf";
+    link.download = "Dr_Lucia_Malickova.vcf";
     link.click();
   }
 
-  // Odpovede avatara
   function reply(type) {
     const out = document.getElementById('lucy-output');
-    if (type === 'safehaven') {
-      out.innerHTML = "<b>The Safe Haven</b> je suverénne off-grid útočisko a výskumný priestor na Tenerife. Kombinujeme prírodné biomateriály počítané neurónovými sieťami, 3D tlačenú architektúru a air-gapped on-premise AI uzly nezávislé od verejných cloudov.";
-    } else if (type === 'tech') {
-      out.innerHTML = "Staviame na <b>on-premise modeloch a HPC výpočtoch</b> (EuroHPC infraštruktúra, QLoRA, fyzikálne neurónové siete a kvantové simulácie). Naše dáta neopúšťajú zabezpečené uzly.";
-    } else if (type === 'collab') {
-      out.innerHTML = "Prijímame partnerstvá pre výskum, pilotné nasadenie modelov a vybrané privátne rezidencie v Safe Haven. Prepoj sa priamo s Luciou cez LinkedIn vyššie.";
+    if (type === 'architecture') {
+      out.innerHTML = "Tvoríme priestory z opunciovo-vápenných omietok vyvíjaných neurónovými sieťami. Namiesto klimatizácie využívame pasívnu reguláciu vlhkosti a parametrický 3D tlačený nábytok.";
+    } else if (type === 'ai') {
+      out.innerHTML = "Naše dáta neopúšťajú skalu. Optimalizujeme open-weights modely cez HPC infraštruktúru a kvantové simulácie. Absolútna digitálna suverenita.";
     }
   }
 </script>
