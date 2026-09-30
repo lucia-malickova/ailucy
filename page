@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lucy // Sovereign AI Node</title>
+  <style>
+    :root {
+      --bg: #090a0c;
+      --card: #13161a;
+      --border: #222930;
+      --accent: #10b981; /* Smaragdová zelená */
+      --text: #e5e7eb;
+      --muted: #6b7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
+    body { background-color: var(--bg); color: var(--text); padding: 24px 16px; min-height: 100vh; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 20px; }
+    
+    /* Hlavička uzla */
+    .badge { display: inline-flex; align-items: center; gap: 8px; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); padding: 4px 10px; border-radius: 9999px; }
+    .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    h1 { font-size: 1.4rem; font-weight: 700; color: #fff; margin-top: 8px; }
+    p.sub { font-size: 0.85rem; color: var(--muted); }
+
+    /* Rýchle akcie (Uložiť kontakt & LinkedIn) */
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn { display: flex; align-items: center; justify-content: center; padding: 12px 14px; border-radius: 10px; text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; cursor: pointer; border: none; transition: transform 0.1s ease; }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--accent); color: #041f16; }
+    .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+
+    /* Terminál s Lucy */
+    .terminal { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .term-header { font-size: 0.75rem; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 8px; display: flex; justify-content: space-between; }
+    .msg { font-size: 0.9rem; line-height: 1.5; color: #d1d5db; }
+    .msg b { color: #fff; }
+    
+    /* Navigačné otázky */
+    .chips { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .chip { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; color: #9ca3af; font-size: 0.85rem; text-align: left; cursor: pointer; }
+    .chip:hover { border-color: var(--accent); color: #fff; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Status uzla -->
+  <div>
+    <span class="badge"><span class="pulse"></span> Sovereign Node // Online</span>
+    <h1>Modelos Inteligencia Artificial</h1>
+    <p class="sub">The Safe Haven • High-Performance Computing • Local AI</p>
+  </div>
+
+  <!-- Okamžité kontaktné akcie -->
+  <div class="actions">
+    <button class="btn btn-primary" onclick="downloadVCard()">Uložiť kontakt (vCard)</button>
+    <a class="btn btn-secondary" href="https://www.linkedin.com/in/TVOJ-LINKEDIN" target="_blank">LinkedIn Profil</a>
+  </div>
+
+  <!-- Lucy Terminal -->
+  <div class="terminal">
+    <div class="term-header">
+      <span>AI AGENT: LUCY</span>
+      <span>STATUS: ACTIVE</span>
+    </div>
+    <div class="msg" id="lucy-output">
+      Ahoj. Detegovala som fyzický token. Som <b>Lucy</b>, lokálna inteligencia prepojená s projektmi Lucie Malíčkovej. Ulož si kontakt vyššie, alebo si vyber, čo ťa zaujíma:
+    </div>
+
+    <div class="chips">
+      <button class="chip" onclick="reply('safehaven')">➔ Čo je projekt The Safe Haven?</button>
+      <button class="chip" onclick="reply('tech')">➔ Na akej infraštruktúre bežíme?</button>
+      <button class="chip" onclick="reply('collab')">➔ Možnosti spolupráce a alokácie</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Funkcia na okamžité stiahnutie VCF vizitky do telefónu
+  function downloadVCard() {
+    const vcardData = 
+`BEGIN:VCARD
+VERSION:3.0
+N:Malíčková;Lucia;Dr.;;
+FN:Dr. Lucia Malíčková
+ORG:Modelos Inteligencia Artificial S.L.
+TITLE:Founder & AI Architect
+EMAIL;TYPE=INTERNET:kontakt@tvojadomena.com
+URL:https://tvojadomena.com
+URL;TYPE=LinkedIn:https://www.linkedin.com/in/TVOJ-LINKEDIN
+NOTE:The Safe Haven Node - Suverénna lokálna AI & Bio-architektúra
+END:VCARD`;
+
+    const blob = new Blob([vcardData], { type: 'text/vcard;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = "Lucia_Malickova.vcf";
+    link.click();
+  }
+
+  // Odpovede avatara
+  function reply(type) {
+    const out = document.getElementById('lucy-output');
+    if (type === 'safehaven') {
+      out.innerHTML = "<b>The Safe Haven</b> je suverénne off-grid útočisko a výskumný priestor na Tenerife. Kombinujeme prírodné biomateriály počítané neurónovými sieťami, 3D tlačenú architektúru a air-gapped on-premise AI uzly nezávislé od verejných cloudov.";
+    } else if (type === 'tech') {
+      out.innerHTML = "Staviame na <b>on-premise modeloch a HPC výpočtoch</b> (EuroHPC infraštruktúra, QLoRA, fyzikálne neurónové siete a kvantové simulácie). Naše dáta neopúšťajú zabezpečené uzly.";
+    } else if (type === 'collab') {
+      out.innerHTML = "Prijímame partnerstvá pre výskum, pilotné nasadenie modelov a vybrané privátne rezidencie v Safe Haven. Prepoj sa priamo s Luciou cez LinkedIn vyššie.";
+    }
+  }
+</script>
+
+</body>
+</html>
