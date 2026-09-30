@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>LUCY // Sovereign Node</title>
+  <title>AI LUCY // Digital Twin</title>
   
-  <link rel="icon" type="image/png" href="tvoje-logo-ai-stred.png?v=5">
-  <link rel="apple-touch-icon" href="tvoje-logo-ai-stred.png?v=5">
+  <link rel="icon" type="image/png" href="tvoje-logo-ai-stred.png?v=6">
+  <link rel="apple-touch-icon" href="tvoje-logo-ai-stred.png?v=6">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
   
   <style>
@@ -16,7 +16,6 @@
       --text-main: #ffffff;
       --text-muted: #666666;
       --border: #1a1a1a;
-      --accent: #d4af37; /* Jemný odkaz na zlatú */
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,7 +24,6 @@
       background-color: var(--bg-black);
       color: var(--text-main);
       font-family: 'Montserrat', sans-serif;
-      /* Zamedzenie scrollovania celej stránky */
       height: 100vh;
       height: 100dvh;
       overflow: hidden; 
@@ -62,11 +60,7 @@
       gap: 12px;
     }
 
-    .lang-btn {
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-
+    .lang-btn { cursor: pointer; transition: color 0.3s; }
     .lang-btn.active { color: #ffffff; font-weight: 600; }
     .lang-btn:hover { color: #ffffff; }
 
@@ -97,10 +91,15 @@
     }
 
     h1 {
-      font-weight: 300;
+      font-weight: 400;
       font-size: 1.4rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
+    }
+
+    .ai-label {
+      font-weight: 600;
+      color: #ffffff;
     }
 
     /* CHATOVACIA ČASŤ */
@@ -110,7 +109,7 @@
       border: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      overflow: hidden; /* Dôležité pre správne scrollovanie zoznamu */
+      overflow: hidden; 
     }
 
     .chat-log {
@@ -120,15 +119,11 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      scrollbar-width: none; /* Firefox */
+      scrollbar-width: none;
     }
-    .chat-log::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+    .chat-log::-webkit-scrollbar { display: none; }
 
-    .message-block {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .message-block { display: flex; flex-direction: column; gap: 4px; }
 
     .message-sender {
       font-size: 0.55rem;
@@ -153,7 +148,6 @@
       margin-left: 4px;
       color: #ffffff;
     }
-    
     @keyframes blink { 50% { opacity: 0; } }
 
     /* INPUT POLE */
@@ -231,13 +225,11 @@
     <div class="status">
       <span class="dot"></span> <span id="ui-status">Spojenie nadviazané</span>
     </div>
-    <h1>LUCY</h1>
+    <h1><span class="ai-label">AI</span> LUCY</h1>
   </div>
 
   <div class="avatar-interface">
-    <div class="chat-log" id="chat-log">
-      <!-- Chat história -->
-    </div>
+    <div class="chat-log" id="chat-log"></div>
     <div class="input-area">
       <input type="text" id="user-input" placeholder="Opýtaj sa na Luciu..." onkeypress="handleEnter(event)">
       <button onclick="processInput()">►</button>
@@ -252,51 +244,62 @@
 </div>
 
 <script>
-  // Preklady a logika umelej inteligencie
   const i18n = {
     sk: {
       status: "Spojenie nadviazané",
-      placeholder: "Napíš správu pre Lucy...",
+      placeholder: "Napíš správu pre AI Lucy...",
       btnVcard: "Ulož vizitku do mobilu",
       btnLinked: "Spoj sa na LinkedIn",
       senderUser: "Hosť",
       responses: {
-        welcome: "Detegovaný fyzický token. Som Lucy, autonómny uzol a digitálna dvojička Lucie Malíčkovej. Som tu, aby som zodpovedala vaše otázky v jej mene. Úplne logicky a bez zbytočného cloudu. Čo vás zaujíma?",
-        edu: "Moja organická dvojička má doktorát z neuromarketingu, inžiniersky titul z ekonómie, bakalársky zo zdravotníckych vied a spravila si DBA z HPC a umelej inteligencie. Prednáša aj digitálne zručnosti a behaviorálne stratégie.",
-        work: "Bežíme výhradne on-premise. Špecializujeme sa na fine-tuning modelov (Mistral, Llama) na superpočítačoch EuroHPC. Staviame off-grid komplex The Safe Haven na Tenerife, kde využívame 3D tlač a biomateriály. Žiadny cloud, plná suverenita.",
-        contact: "Ak ju chcete kontaktovať napriamo: Email je lucy@thesafehaven.ai a slovenské číslo +421 907 536 490. Najrýchlejšie je uložiť si vizitku cez tlačidlo dole, alebo sa spojiť cez LinkedIn.",
-        research: "Zaujíma vás výskum? Jej najnovšia publikácia rieši 'Behavioral Reprogramming of Open-Weights Models' pod hlavičkou VŠB-TUO. Vo svojom newslettri analyzuje prieniky AI – aktuálne flexibilitu a output expansion.",
-        fallback: "Som prísne logický model, táto otázka je mimo môj aktuálny kontext. Spýtajte sa ma na jej prácu, projekty The Safe Haven, vzdelanie, výskum, alebo si rovno uložte kontakt."
+        welcome: "Detegovaný fyzický token. Som AI Lucy, digitálna dvojička Lucie Malíčkovej. Som tu, aby som zodpovedala vaše otázky v jej mene. Keďže som jej dvojička, viem o nej všetko – spýtajte sa na prácu, vzdelanie, vedecké publikácie alebo jej myšlienky. Čo vás zaujíma?",
+        personal: "Narodila sa 5. augusta 1988 v Poprade. Je vydatá a má 3 deti. Žije striedavo na Slovensku a na Tenerife. To je všetko, ďalšie súkromné detaily nie je potrebné rozvádzať.",
+        edu: "Má vedecký PhD. z behaviorálneho správania a profesný doktorát DBA z HPC a AI. Ďalej má inžiniersky titul z ekonómie, MSc. z neuromarketingu a bakalársky titul zo zdravotníckych vied.",
+        work: "Je predovšetkým vedec a výskumník. Založila Modelos Inteligencia Artificial a off-grid projekt The Safe Haven. Pracuje v Národnom superpočítačovom centre Slovenska a Českej republiky. Je tiež lektorkou inštitútu CEMI (predmety ako AI pre manažérov, AI v zdravotníctve, Digitálne zručnosti pre manažérov). Spoluvlastní aj rezort Villa Lucia v UNESCO zóne Banskej Štiavnice.",
+        safehaven: "The Safe Haven je jej vizionársky off-grid projekt na Tenerife. Prepája udržateľnosť, biomateriály, 3D tlačenú architektúru a vlastnú lokálnu umelú inteligenciu bežiacu absolútne nezávisle na cloudoch. Detaily nájdete na thesafehaven.ai.",
+        hobbies: "Jej veľkou vášňou je golf. V minulosti dokonca pôsobila ako prezidentka Slovenskej golfovej asociácie.",
+        research: "Publikuje v oblasti HPC, AI a Quantum computing. Najdôležitejšie práce sú 'Behavioral Reprogramming of Open-Weights Models' a výskum VQE. Kompletný zoznam jej prác nájdete na platforme ORCID.",
+        newsletter: "Jej myšlienky a postoje k prieniku AI a spoločnosti môžete čítať v jej LinkedIn newslettri. Aktuálne rozoberá témy ako 'output expansion', flexibilitu a schopnosť učiť sa. Odporúčam kliknúť dole na jej LinkedIn a prihlásiť sa na odber.",
+        contact: "Najrýchlejší spôsob, ako ju zastihnúť: Email je lucy@thesafehaven.ai a slovenské číslo +421 907 536 490. Uložte si jej vizitku cez tlačidlo pod chatom, alebo sa spojte cez LinkedIn.",
+        fallback: "Na toto presnú odpoveď nemám. Ak chcete vedieť bližšie informácie o jej výskume, projektoch alebo myšlienkach, pozrite si stránku thesafehaven.ai, prejdite na jej LinkedIn, alebo si uložte kontakt a napíšte jej priamo."
       }
     },
     en: {
       status: "Connection established",
-      placeholder: "Message Lucy...",
+      placeholder: "Message AI Lucy...",
       btnVcard: "Save contact to mobile",
       btnLinked: "Connect on LinkedIn",
       senderUser: "Guest",
       responses: {
-        welcome: "Physical token detected. I am Lucy, an autonomous node and digital twin of Dr. Lucia Malíčková. I am here to answer on her behalf. Purely logical and without unnecessary cloud. What do you want to know?",
-        edu: "My organic twin holds a PhD in neuromarketing, an MSc in economics, a BSc in health sciences, and a DBA in HPC and Artificial Intelligence. She also lectures on digital skills.",
-        work: "We run strictly on-premise. We specialize in fine-tuning open-weights models using EuroHPC supercomputers. We are also building The Safe Haven on Tenerife, an off-grid complex using biomaterials and 3D printing.",
-        contact: "To contact her directly: Email is lucy@thesafehaven.ai and phone is +421 907 536 490. The fastest way is to save the contact via the button below or connect on LinkedIn.",
-        research: "Her latest research includes a publication on 'Behavioral Reprogramming of Open-Weights Models' (VŠB-TUO). She also writes a newsletter on AI intersections, currently focusing on flexibility and output expansion.",
-        fallback: "I am a strictly logical model, this is outside my current context. Ask me about her work, The Safe Haven projects, education, research, or simply save the contact."
+        welcome: "Physical token detected. I am AI Lucy, the digital twin of Dr. Lucia Malíčková. I am here to answer on her behalf. Knowing her perfectly, you can ask me about her work, education, research publications, or thoughts. What interests you?",
+        personal: "She was born on August 5, 1988, in Poprad. She is married and has 3 children. She divides her time between Slovakia and Tenerife. That covers the private life basics.",
+        edu: "She holds a scientific PhD in behavioral science, a professional DBA in HPC and AI, a Master's (Ing.) in economics, an MSc in neuromarketing, and a BSc in health sciences.",
+        work: "She is primarily a scientist and researcher. Founder of Modelos Inteligencia Artificial and The Safe Haven. She works at the National Supercomputing Centres of Slovakia and the Czech Republic. She is a lecturer at the CEMI institute (AI for managers, Digital skills). She also co-owns Villa Lucia in the UNESCO zone of Banská Štiavnica.",
+        safehaven: "The Safe Haven is her off-grid project on Tenerife, combining sustainability, biomaterials, 3D printing, and sovereign local AI. Find out more at thesafehaven.ai.",
+        hobbies: "Her main hobby is golf. In the past, she served as the President of the Slovak Golf Association.",
+        research: "She publishes in HPC, AI, and Quantum computing. Key papers include 'Behavioral Reprogramming of Open-Weights Models' and VQE research. Find her complete works on ORCID.",
+        newsletter: "She publishes her thoughts on AI and society in her LinkedIn newsletter, discussing 'output expansion', flexibility, and learning ability. Check her LinkedIn profile to read it.",
+        contact: "To contact her: Email lucy@thesafehaven.ai or call +421 907 536 490. Save the contact via the button below or connect on LinkedIn.",
+        fallback: "I don't have an exact answer for that. For more detailed information, please visit thesafehaven.ai, check her LinkedIn, or save her contact to ask her directly."
       }
     },
     es: {
       status: "Conexión establecida",
-      placeholder: "Escribe a Lucy...",
-      btnVcard: "Guardar en el móvil",
+      placeholder: "Escribe a AI Lucy...",
+      btnVcard: "Guardar contacto",
       btnLinked: "Conectar en LinkedIn",
       senderUser: "Invitado",
       responses: {
-        welcome: "Token físico detectado. Soy Lucy, un nodo autónomo y gemela digital de la Dra. Lucia Malíčková. Estoy aquí para responder en su nombre. De forma puramente lógica. ¿Qué te interesa saber?",
-        edu: "Mi gemela orgánica tiene un doctorado en neuromarketing, máster en economía, grado en ciencias de la salud y un DBA en HPC e IA. También imparte clases sobre habilidades digitales.",
-        work: "Operamos de forma on-premise. Nos especializamos en afinar modelos open-weights usando superordenadores EuroHPC. Construimos The Safe Haven en Tenerife, un complejo off-grid usando biomateriales y impresión 3D.",
-        contact: "Para contacto directo: Su email es lucy@thesafehaven.ai y el teléfono +421 907 536 490. Lo más rápido es guardar el contacto con el botón de abajo o conectarse por LinkedIn.",
-        research: "Su investigación incluye la publicación 'Behavioral Reprogramming of Open-Weights Models'. Escribe una newsletter sobre IA, abordando actualmente la flexibilidad y la expansión de outputs.",
-        fallback: "Soy un modelo puramente lógico, esta consulta está fuera de mi contexto. Pregúntame sobre su trabajo, The Safe Haven, educación, investigación, o simplemente guarda su contacto."
+        welcome: "Token físico detectado. Soy AI Lucy, la gemela digital de la Dra. Lucia Malíčková. Estoy aquí para responder en su nombre. Lo sé todo sobre ella; pregúntame sobre su trabajo, educación, publicaciones o ideas. ¿Qué te interesa?",
+        personal: "Nació el 5 de agosto de 1988 en Poprad. Está casada y tiene 3 hijos. Vive entre Eslovaquia y Tenerife. Esos son todos los detalles privados que compartimos.",
+        edu: "Tiene un doctorado en ciencias del comportamiento, un DBA en HPC e IA, un máster en economía, un MSc en neuromarketing y un grado en ciencias de la salud.",
+        work: "Es científica e investigadora. Fundadora de Modelos Inteligencia Artificial y The Safe Haven. Trabaja en los Centros Nacionales de Supercomputación de Eslovaquia y Chequia. Es profesora en el instituto CEMI (IA para directivos). También es copropietaria de Villa Lucia en Banská Štiavnica (UNESCO).",
+        safehaven: "The Safe Haven es su proyecto off-grid en Tenerife, que combina sostenibilidad, impresión 3D y una IA local soberana. Más detalles en thesafehaven.ai.",
+        hobbies: "Su afición principal es el golf. Fue presidenta de la Asociación Eslovaca de Golf.",
+        research: "Publica sobre HPC, IA y computación cuántica. Trabajos clave: 'Behavioral Reprogramming of Open-Weights Models' e investigación VQE. Su historial completo está en ORCID.",
+        newsletter: "Comparte sus reflexiones sobre IA y sociedad en su newsletter de LinkedIn, analizando la 'expansión de outputs' y la flexibilidad. Te sugiero leerlo en su perfil.",
+        contact: "Para contactarla: Email lucy@thesafehaven.ai, teléfono +421 907 536 490. Puedes guardar el contacto con el botón inferior o conectarte por LinkedIn.",
+        fallback: "No tengo la respuesta exacta a eso. Para más detalles, visita thesafehaven.ai, su LinkedIn, o guarda su contacto para escribirle directamente."
       }
     }
   };
@@ -317,19 +320,17 @@
     document.getElementById('ui-linkedin').innerText = i18n[lang].btnLinked;
   }
 
-  // Funkcia na posúvanie chatu úplne dole
   function scrollToBottom() {
     chatLog.scrollTop = chatLog.scrollHeight;
   }
 
-  // Vytvorenie HTML bubliny v chate
   function appendMessage(sender, text, isAnimated = false) {
     const msgBlock = document.createElement('div');
     msgBlock.className = 'message-block';
     
     const senderTag = document.createElement('div');
     senderTag.className = 'message-sender';
-    senderTag.innerText = sender === 'lucy' ? 'LUCY' : i18n[currentLang].senderUser;
+    senderTag.innerText = sender === 'lucy' ? 'AI LUCY' : i18n[currentLang].senderUser;
     
     const msgText = document.createElement('div');
     msgText.className = 'message ' + sender;
@@ -360,14 +361,13 @@
     }
   }
 
-  // Reakcia na stlačenie Enter
   function handleEnter(e) {
     if (e.key === 'Enter') processInput();
   }
 
-  // Mozog umelej inteligencie - detekcia slov
+  // Detekcia kľúčových slov vo všetkých 3 jazykoch
   function processInput() {
-    if (isTyping) return; // Zamedzí spamovaniu kým Lucy píše
+    if (isTyping) return; 
     const inputField = document.getElementById('user-input');
     const text = inputField.value.trim();
     if (!text) return;
@@ -378,32 +378,37 @@
     const lower = text.toLowerCase();
     let category = 'fallback';
 
-    // Logika detekcie kľúčových slov pre 3 jazyky
-    if (lower.match(/(skola|škola|vzdelanie|studium|štúdium|doktorát|dba|bc|ing|education|university|study|estudio|educación|universidad)/)) {
+    if (lower.match(/(narod|rodina|deti|vek|bydlisko|sukrom|manzel|osobn|born|family|kids|age|live|private|husband|nacimiento|familia|hijos|edad|vive|privad)/)) {
+      category = 'personal';
+    } else if (lower.match(/(skola|škola|vzdelanie|studium|štúdium|doktor|dba|bc|ing|msc|phd|education|university|study|degree|educación|universidad|estudio|grado)/)) {
       category = 'edu';
-    } else if (lower.match(/(praca|práca|projekt|ai|hpc|safe haven|model|biznis|work|job|project|trabajo|proyecto)/)) {
+    } else if (lower.match(/(safe haven|tenerife|off-grid|architekt)/)) {
+      category = 'safehaven';
+    } else if (lower.match(/(praca|práca|pracuj|biznis|modelos|cemi|superpocitac|hpc|lektor|villa lucia|work|job|business|lecturer|trabajo|negocio|profesor)/)) {
       category = 'work';
-    } else if (lower.match(/(kontakt|cislo|číslo|mobil|telefon|telefón|email|mail|spojit|contact|phone|número|teléfono)/)) {
-      category = 'contact';
-    } else if (lower.match(/(vyskum|výskum|publik|newsletter|kniha|článok|research|publication|book|investigación|publicación|libro)/)) {
+    } else if (lower.match(/(hobby|volny cas|golf|zaujmy|konicek|free time|hobbies|tiempo libre|pasatiempo)/)) {
+      category = 'hobbies';
+    } else if (lower.match(/(vyskum|výskum|publik|orcid|vqe|vedec|veda|research|publication|science|scientist|investigación|publicación|ciencia)/)) {
       category = 'research';
+    } else if (lower.match(/(myslien|newsletter|clank|úvah|thought|article|pensamiento|artículo)/)) {
+      category = 'newsletter';
+    } else if (lower.match(/(kontakt|cislo|číslo|mobil|telefon|telefón|email|mail|spojit|contact|phone|teléfono)/)) {
+      category = 'contact';
     } else if (lower.match(/(ahoj|cau|dobry|čau|zdravim|hello|hi|hey|hola|buenos)/)) {
       category = 'welcome';
     }
 
     setTimeout(() => {
       appendMessage('lucy', i18n[currentLang].responses[category], true);
-    }, 400); // Krátka pauza na "rozmýšľanie"
+    }, 400);
   }
 
-  // Úvodná správa po načítaní
   window.onload = () => {
     setTimeout(() => {
       appendMessage('lucy', i18n[currentLang].responses.welcome, true);
     }, 600);
   };
 
-  // VCard ostáva zachovaný
   function downloadVCard() {
     const vcardData = 
 `BEGIN:VCARD
@@ -414,9 +419,9 @@ ORG:Modelos Inteligencia Artificial S.L.
 TITLE:Founder & AI Architect
 TEL;TYPE=CELL:+421907536490
 EMAIL;TYPE=WORK,INTERNET:lucy@thesafehaven.ai
-URL:https://www.modelosinteligenciaartificial.es
+URL:https://www.thesafehaven.ai
 URL;TYPE=LinkedIn:https://www.linkedin.com/in/lucia-malickova
-NOTE:Contact provided via Sovereign AI Node.
+NOTE:Contact provided via AI LUCY (Sovereign Node).
 END:VCARD`;
 
     const blob = new Blob([vcardData], { type: 'text/vcard;charset=utf-8' });
