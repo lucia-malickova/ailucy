@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lucy | Digital Twin</title>
+  <title>LUCY // Sovereign Node</title>
   
-  <!-- Oklamanie cache pridaním ?v=3 -->
-  <link rel="icon" type="image/png" href="tvoje-logo-ai-stred.png?v=3">
+  <!-- Tvoja favicon (iba hore v záložke) -->
+  <link rel="icon" type="image/png" href="tvoje-logo-ai-stred.png?v=5">
+  <link rel="apple-touch-icon" href="tvoje-logo-ai-stred.png?v=5">
   
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-black: #000000;
-      --surface: #040404;
+      --surface: #030303;
       --text-main: #ffffff;
-      --text-muted: #666666;
-      --border: #1a1a1a;
-      --gold: #d4af37; /* Pridaný zlatý akcent z loga */
+      --text-muted: #555555;
+      --border: #141414;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,147 +33,147 @@
       overflow-x: hidden;
     }
 
-    /* Hypnotický ambientný podklad */
-    body::before {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100vw; height: 100vh;
-      background: radial-gradient(circle at center, rgba(212, 175, 55, 0.03) 0%, transparent 60%);
-      z-index: -1;
-      pointer-events: none;
-    }
-
     .container {
       width: 100%;
       max-width: 420px;
       display: flex;
       flex-direction: column;
-      gap: 40px;
+      gap: 32px;
       z-index: 1;
     }
 
     .header { 
-      text-align: center; 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    /* Štýl pre vložené logo */
-    .mia-logo {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      margin-bottom: 24px;
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.15); /* Jemná zlatá žiara */
-      border: 1px solid rgba(212, 175, 55, 0.3);
-    }
-
-    h1 {
-      font-weight: 300;
-      font-size: 1.5rem;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      font-weight: 300;
-      font-size: 0.6rem;
-      letter-spacing: 0.5em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    @keyframes slow-breath {
-      0% { box-shadow: 0 0 15px rgba(255,255,255,0.02); border-color: #1a1a1a; }
-      50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.08); border-color: #333333; }
-      100% { box-shadow: 0 0 15px rgba(255,255,255,0.02); border-color: #1a1a1a; }
-    }
-
-    .node-box {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      padding: 32px 24px;
-      animation: slow-breath 6s infinite ease-in-out;
+      text-align: left; 
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
     }
 
     .status {
       font-size: 0.55rem;
-      letter-spacing: 0.25em;
+      letter-spacing: 0.3em;
       color: var(--text-muted);
       text-transform: uppercase;
-      margin-bottom: 24px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
 
     .dot {
-      width: 5px;
-      height: 5px;
-      background-color: var(--gold);
+      width: 4px;
+      height: 4px;
+      background-color: #ffffff;
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--gold);
+      box-shadow: 0 0 8px #ffffff;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+
+    h1 {
+      font-weight: 300;
+      font-size: 1.4rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    /* Rozhranie Chat Avatara */
+    .avatar-interface {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-log {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
     }
 
     .message {
       font-weight: 300;
-      font-size: 0.9rem;
-      line-height: 1.7;
-      color: #b3b3b3;
-      margin-bottom: 32px;
-      min-height: 100px;
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: #cccccc;
     }
 
     .message b {
-      font-weight: 600;
+      font-weight: 500;
       color: #ffffff;
     }
 
-    .questions {
+    .cursor::after {
+      content: '█';
+      animation: blink 1s step-start infinite;
+      margin-left: 4px;
+      color: #ffffff;
+    }
+    
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Dotazovacie Prompty */
+    .prompts {
       display: flex;
       flex-direction: column;
-      gap: 0;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
     }
 
-    .question-btn {
-      background: transparent;
+    .prompt-btn {
+      background: var(--surface);
       border: none;
-      border-top: 1px solid var(--border);
       color: var(--text-muted);
-      padding: 16px 4px;
-      font-size: 0.7rem;
+      padding: 14px 16px;
+      font-size: 0.65rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       cursor: pointer;
       text-align: left;
       transition: all 0.3s ease;
       display: flex;
-      justify-content: space-between;
-    }
-
-    .question-btn:hover { color: #ffffff; padding-left: 8px; }
-    .question-btn:last-child { border-bottom: 1px solid var(--border); }
-
-    .actions {
-      display: flex;
-      flex-direction: column;
+      align-items: center;
       gap: 12px;
     }
 
+    .prompt-btn::before {
+      content: '>';
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    .prompt-btn:hover { 
+      color: #ffffff; 
+      background: #080808;
+    }
+    
+    .prompt-btn:hover::before { color: #ffffff; opacity: 1; }
+
+    /* Hlavné akcie */
+    .actions {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+    }
+
     .btn {
-      width: 100%;
+      flex: 1;
       background: transparent;
       border: 1px solid var(--border);
-      color: var(--text-main);
+      color: var(--text-muted);
       padding: 16px;
-      font-size: 0.7rem;
+      font-size: 0.6rem;
       font-weight: 400;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       cursor: pointer;
       transition: all 0.4s ease;
@@ -182,20 +182,9 @@
     }
 
     .btn:hover {
-      background: #ffffff;
-      color: #000000;
-      border-color: #ffffff;
+      color: #ffffff;
+      border-color: #333333;
     }
-
-    .btn-primary { background: #ffffff; color: #000000; }
-    .btn-primary:hover { background: transparent; color: #ffffff; border-color: #ffffff; }
-
-    .cursor::after {
-      content: '█';
-      animation: blink 1s step-start infinite;
-      margin-left: 4px;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
   </style>
 </head>
 <body>
@@ -203,38 +192,34 @@
 <div class="container">
   
   <div class="header">
-    <!-- Pridané logo M.I.A. priamo do dizajnu -->
-    <img src="tvoje-logo-ai-stred.png?v=3" alt="M.I.A. Logo" class="mia-logo" onerror="this.style.display='none'">
-    
-    <h1>LUCY AI</h1>
-    <div class="subtitle">Digital Twin // Node Active</div>
+    <div class="status">
+      <span class="dot"></span> Pripájanie na lokálny uzol...
+    </div>
+    <h1>LUCY</h1>
   </div>
 
-  <div class="node-box">
-    <div class="status">
-      <span class="dot"></span> Sovereign Interface
-    </div>
-    
-    <div class="message cursor" id="lucy-output">
-      Som Lucy, digitálna dvojička Lucie Malíčkovej. Rada vám zodpoviem na všetky otázky o nej. Zvoľte si okruh záujmu.
+  <div class="avatar-interface">
+    <div class="chat-log" id="chat-log">
+      <!-- Sem bude Lucy naživo vypisovať text -->
+      <div class="message cursor" id="lucy-typing"></div>
     </div>
 
-    <div class="questions">
-      <button class="question-btn" onclick="typeReply('Vzdelanie: Doktorát z neuromarketingu, DBA z High-Performance Computing a umelej inteligencie, inžiniersky titul z ekonómie a bakalársky zo zdravotníckych vied. Lucia pôsobí aj ako univerzitná lektorka pre digitálne zručnosti a behaviorálne stratégie.')">Vzdelanie & Skúsenosti <span>+</span></button>
-      <button class="question-btn" onclick="typeReply('Schopnosti: Špecializuje sa na fine-tuning open-weights modelov (Mistral, Llama 3.1) na HPC infraštruktúre (Leonardo, LUMI), kvantové simulácie (Qiskit) a vývoj fyzikálnych neurónových sietí. Stavia off-grid AI komplex The Safe Haven na Tenerife.')">Schopnosti & Projekty <span>+</span></button>
-      <button class="question-btn" onclick="typeReply('Publikácie: Jej najnovší výskum zahŕňa publikáciu \\'Behavioral Reprogramming of Open-Weights Models\\' pre žurnál Engineering Applications of Artificial Intelligence pod hlavičkou VŠB-TUO.')">Vedecké publikácie <span>+</span></button>
-      <button class="question-btn" onclick="typeReply('Newsletter: Vo svojich textoch analyzuje hlboké prieniky AI a spoločnosti. Tretie vydanie sa venuje \\'output expansion\\' a štvrté flexibilite a schopnosti učiť sa. Všetky detaily nájdete na LinkedIn profile.')">Newsletter & Myšlienky <span>+</span></button>
+    <div class="prompts" id="prompts-container" style="opacity: 0; transition: opacity 1s ease;">
+      <button class="prompt-btn" onclick="askLucy('profil')">Identifikuj fyzický subjekt (Vzdelanie)</button>
+      <button class="prompt-btn" onclick="askLucy('tech')">Aké sú aktuálne operácie a výpočtová kapacita?</button>
+      <button class="prompt-btn" onclick="askLucy('publikacie')">Aktivuj prístup k výskumu a myšlienkam</button>
     </div>
   </div>
 
   <div class="actions">
-    <button class="btn btn-primary" onclick="downloadVCard()">Uložiť vizitku do telefónu</button>
-    <a href="https://www.linkedin.com/in/lucia-malickova" target="_blank" class="btn">Spojiť sa na LinkedIn</a>
+    <button class="btn" onclick="downloadVCard()">Uložiť VCF Dátový Súbor</button>
+    <a href="https://www.linkedin.com/in/lucia-malickova" target="_blank" class="btn">Autentifikácia (LinkedIn)</a>
   </div>
 
 </div>
 
 <script>
+  // Presné kontaktné údaje do vizitky
   function downloadVCard() {
     const vcardData = 
 `BEGIN:VCARD
@@ -247,7 +232,7 @@ TEL;TYPE=CELL:+421907536490
 EMAIL;TYPE=WORK,INTERNET:lucy@thesafehaven.ai
 URL:https://www.modelosinteligenciaartificial.es
 URL;TYPE=LinkedIn:https://www.linkedin.com/in/lucia-malickova
-NOTE:Získané cez fyzický AI Token. Digitálna dvojička Lucy AI.
+NOTE:Kontakt získaný cez lokálny AI uzol (Sovereign Token).
 END:VCARD`;
 
     const blob = new Blob([vcardData], { type: 'text/vcard;charset=utf-8' });
@@ -257,21 +242,59 @@ END:VCARD`;
     link.click();
   }
 
+  // Logika chatovania - AI Avatar efekt
+  const typingElement = document.getElementById('lucy-typing');
   let typingTimeout;
-  function typeReply(text) {
-    const out = document.getElementById('lucy-output');
+
+  // Iniciačná sekvencia pri načítaní stránky
+  window.onload = () => {
+    setTimeout(() => {
+      document.querySelector('.status').innerHTML = '<span class="dot"></span> Spojenie nadviazané';
+      typeWriter("Detegovaný fyzický token... Prístup povolený. Som Lucy, autonómny uzol a digitálna inteligencia pre The Safe Haven. Moja fyzická verzia (Dr. Lucia Malíčková) je momentálne zaneprázdnená. Som tu, aby som zodpovedala vaše otázky v jej mene. Úplne logicky a bez zbytočného cloudu.", () => {
+        document.getElementById('prompts-container').style.opacity = 1;
+      });
+    }, 800);
+  };
+
+  // Funkcia na simuláciu rozmýšľania a následného písania
+  function askLucy(topic) {
+    document.getElementById('prompts-container').style.opacity = 0.3; // Stlmí tlačidlá počas písania
     clearTimeout(typingTimeout);
-    out.innerHTML = '';
-    let i = 0;
+    typingElement.innerHTML = '';
     
-    function typeWriter() {
+    let responseText = "";
+    
+    if (topic === 'profil') {
+      responseText = "Moja organická dvojička má doktorát z neuromarketingu, inžiniersky titul z ekonómie, bakalársky zo zdravotníckych vied a spravila si DBA z HPC a umelej inteligencie. Zjavne mala pocit, že len jeden odbor je nuda. Okrem iného prednáša digitálne zručnosti a behaviorálne stratégie.";
+    } else if (topic === 'tech') {
+      responseText = "Bežíme výhradne na on-premise infraštruktúre. Špecializujeme sa na fine-tuning open-weights modelov (Mistral, Llama) s využitím superpočítačov EuroHPC. Žiadne odosielanie dát externým korporáciám. Staviame off-grid komplex z opunciovo-vápenných zmesí rátaných na kvantových emulátoroch. Absolútna suverenita.";
+    } else if (topic === 'publikacie') {
+      responseText = "Jej najnovší výskum zahŕňa publikáciu 'Behavioral Reprogramming of Open-Weights Models' pre žurnál Engineering Applications of Artificial Intelligence pod hlavičkou VŠB-TUO. Okrem toho publikuje newsletter o hlbokých prienikoch AI – aktuálne rieši flexibilitu, schopnosť učiť sa a tzv. output expansion. Všetky detaily má na svojom LinkedIn profile.";
+    }
+
+    // Krátka pauza na "spracovanie požiadavky"
+    setTimeout(() => {
+      typeWriter(responseText, () => {
+        document.getElementById('prompts-container').style.opacity = 1;
+      });
+    }, 400);
+  }
+
+  // Samotný engine na postupné písanie textu
+  function typeWriter(text, callback) {
+    let i = 0;
+    typingElement.innerHTML = '';
+    
+    function typeNextChar() {
       if (i < text.length) {
-        out.innerHTML += text.charAt(i);
+        typingElement.innerHTML += text.charAt(i);
         i++;
-        typingTimeout = setTimeout(typeWriter, 15);
+        typingTimeout = setTimeout(typeNextChar, 10 + Math.random() * 15); // Jemne variabilná rýchlosť pre ľudskejší / realistický efekt
+      } else {
+        if(callback) callback();
       }
     }
-    typeWriter();
+    typeNextChar();
   }
 </script>
 
