@@ -2,7 +2,7 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>LUCY // Sovereign Node</title>
   
   <link rel="icon" type="image/png" href="tvoje-logo-ai-stred.png?v=5">
@@ -12,10 +12,11 @@
   <style>
     :root {
       --bg-black: #000000;
-      --surface: #030303;
+      --surface: #050505;
       --text-main: #ffffff;
-      --text-muted: #555555;
-      --border: #141414;
+      --text-muted: #666666;
+      --border: #1a1a1a;
+      --accent: #d4af37; /* Jemný odkaz na zlatú */
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,31 +25,32 @@
       background-color: var(--bg-black);
       color: var(--text-main);
       font-family: 'Montserrat', sans-serif;
-      min-height: 100vh;
+      /* Zamedzenie scrollovania celej stránky */
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden; 
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 24px;
-      overflow-x: hidden;
+      padding: 20px;
     }
 
     .container {
       width: 100%;
       max-width: 420px;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      gap: 32px;
-      z-index: 1;
+      gap: 20px;
     }
 
     .header { 
       position: relative;
       text-align: left; 
       border-bottom: 1px solid var(--border);
-      padding-bottom: 16px;
+      padding-bottom: 12px;
+      flex-shrink: 0;
     }
 
-    /* Prepínač jazykov */
     .lang-switcher {
       position: absolute;
       top: 0;
@@ -65,11 +67,7 @@
       transition: color 0.3s;
     }
 
-    .lang-btn.active {
-      color: #ffffff;
-      font-weight: 600;
-    }
-
+    .lang-btn.active { color: #ffffff; font-weight: 600; }
     .lang-btn:hover { color: #ffffff; }
 
     .status {
@@ -105,29 +103,49 @@
       text-transform: uppercase;
     }
 
+    /* CHATOVACIA ČASŤ */
     .avatar-interface {
+      flex: 1;
       background: var(--surface);
       border: 1px solid var(--border);
-      padding: 24px;
-      min-height: 290px;
       display: flex;
       flex-direction: column;
+      overflow: hidden; /* Dôležité pre správne scrollovanie zoznamu */
     }
 
     .chat-log {
-      flex-grow: 1;
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      margin-bottom: 24px;
+      gap: 20px;
+      scrollbar-width: none; /* Firefox */
+    }
+    .chat-log::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+    .message-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .message-sender {
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
     }
 
     .message {
       font-weight: 300;
       font-size: 0.85rem;
-      line-height: 1.8;
+      line-height: 1.6;
       color: #cccccc;
     }
+
+    .message.user { color: #ffffff; }
+    .message.lucy { color: #cccccc; }
 
     .cursor::after {
       content: '█';
@@ -138,35 +156,45 @@
     
     @keyframes blink { 50% { opacity: 0; } }
 
-    .prompts {
+    /* INPUT POLE */
+    .input-area {
       display: flex;
-      flex-direction: column;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      background: #020202;
     }
 
-    .prompt-btn {
-      background: var(--surface);
+    .input-area input {
+      flex: 1;
+      background: transparent;
       border: none;
-      color: var(--text-muted);
-      padding: 14px 16px;
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      padding: 16px 20px;
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      outline: none;
     }
 
-    .prompt-btn::before { content: '>'; opacity: 0.5; }
-    .prompt-btn:hover { color: #ffffff; background: #080808; }
-    .prompt-btn:hover::before { opacity: 1; }
+    .input-area input::placeholder { color: #444; }
 
-    .actions { display: flex; flex-direction: row; gap: 8px; }
+    .input-area button {
+      background: transparent;
+      border: none;
+      border-left: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: color 0.3s;
+    }
+    .input-area button:hover { color: #ffffff; }
+
+    /* TLAČIDLÁ (Footer) */
+    .actions {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+    }
 
     .btn {
       flex: 1;
@@ -176,12 +204,15 @@
       padding: 16px;
       font-size: 0.6rem;
       font-weight: 400;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       cursor: pointer;
       transition: all 0.4s ease;
       text-decoration: none;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .btn:hover { color: #ffffff; border-color: #333333; }
@@ -198,148 +229,182 @@
       <span class="lang-btn" onclick="setLang('es')" id="btn-es">ES</span>
     </div>
     <div class="status">
-      <span class="dot"></span> <span id="ui-status">Pripájanie na lokálny uzol...</span>
+      <span class="dot"></span> <span id="ui-status">Spojenie nadviazané</span>
     </div>
     <h1>LUCY</h1>
   </div>
 
   <div class="avatar-interface">
-    <div class="chat-log">
-      <div class="message cursor" id="lucy-typing"></div>
+    <div class="chat-log" id="chat-log">
+      <!-- Chat história -->
     </div>
-
-    <div class="prompts" id="prompts-container" style="opacity: 0; transition: opacity 1s ease; pointer-events: none;">
-      <button class="prompt-btn" onclick="askLucy('profil')" id="ui-prompt1">Identifikuj fyzický subjekt (Vzdelanie)</button>
-      <button class="prompt-btn" onclick="askLucy('tech')" id="ui-prompt2">Aktuálne operácie a výpočtová kapacita</button>
-      <button class="prompt-btn" onclick="askLucy('publikacie')" id="ui-prompt3">Prístup k výskumu a publikáciám</button>
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Opýtaj sa na Luciu..." onkeypress="handleEnter(event)">
+      <button onclick="processInput()">►</button>
     </div>
   </div>
 
   <div class="actions">
-    <button class="btn" onclick="downloadVCard()" id="ui-vcard">Uložiť VCF Dátový Súbor</button>
-    <a href="https://www.linkedin.com/in/lucia-malickova" target="_blank" class="btn" id="ui-linkedin">Autentifikácia (LinkedIn)</a>
+    <button class="btn" onclick="downloadVCard()" id="ui-vcard">Ulož vizitku do mobilu</button>
+    <a href="https://www.linkedin.com/in/lucia-malickova" target="_blank" class="btn" id="ui-linkedin">Spoj sa na LinkedIn</a>
   </div>
 
 </div>
 
 <script>
-  // Dictionaries - Preklady
+  // Preklady a logika umelej inteligencie
   const i18n = {
     sk: {
-      statusConn: "Pripájanie na lokálny uzol...",
-      statusEst: "Spojenie nadviazané",
-      prompt1: "Identifikuj fyzický subjekt (Vzdelanie)",
-      prompt2: "Aktuálne operácie a výpočtová kapacita",
-      prompt3: "Prístup k výskumu a publikáciám",
-      btnVcard: "Uložiť VCF Dátový Súbor",
-      btnLinked: "Autentifikácia (LinkedIn)",
-      texts: {
-        welcome: "Detegovaný fyzický token... Prístup povolený. Som Lucy, autonómny uzol a digitálna inteligencia pre The Safe Haven. Moja fyzická verzia (Dr. Lucia Malíčková) je momentálne mimo gridu. Som tu, aby som zodpovedala vaše otázky v jej mene. Úplne logicky a bez zbytočného cloudu.",
-        profil: "Moja organická dvojička má doktorát z neuromarketingu, inžiniersky titul z ekonómie, bakalársky zo zdravotníckych vied a spravila si DBA z HPC a umelej inteligencie. Zjavne mala pocit, že len jeden odbor je nuda. Prednáša digitálne zručnosti a behaviorálne stratégie.",
-        tech: "Bežíme výhradne na on-premise infraštruktúre. Špecializujeme sa na fine-tuning open-weights modelov na superpočítačoch EuroHPC (Leonardo, LUMI). Žiadne dáta v rukách korporácií. Staviame off-grid komplex z biomateriálov rátaných kvantovými emulátormi.",
-        publikacie: "Jej výskum zahŕňa publikáciu 'Behavioral Reprogramming of Open-Weights Models' pre žurnál Engineering Applications of AI (VŠB-TUO). Publikuje newsletter o prienikoch AI – aktuálne rieši flexibilitu, učenie sa a tzv. output expansion. Všetko nájdete na LinkedIn."
+      status: "Spojenie nadviazané",
+      placeholder: "Napíš správu pre Lucy...",
+      btnVcard: "Ulož vizitku do mobilu",
+      btnLinked: "Spoj sa na LinkedIn",
+      senderUser: "Hosť",
+      responses: {
+        welcome: "Detegovaný fyzický token. Som Lucy, autonómny uzol a digitálna dvojička Lucie Malíčkovej. Som tu, aby som zodpovedala vaše otázky v jej mene. Úplne logicky a bez zbytočného cloudu. Čo vás zaujíma?",
+        edu: "Moja organická dvojička má doktorát z neuromarketingu, inžiniersky titul z ekonómie, bakalársky zo zdravotníckych vied a spravila si DBA z HPC a umelej inteligencie. Prednáša aj digitálne zručnosti a behaviorálne stratégie.",
+        work: "Bežíme výhradne on-premise. Špecializujeme sa na fine-tuning modelov (Mistral, Llama) na superpočítačoch EuroHPC. Staviame off-grid komplex The Safe Haven na Tenerife, kde využívame 3D tlač a biomateriály. Žiadny cloud, plná suverenita.",
+        contact: "Ak ju chcete kontaktovať napriamo: Email je lucy@thesafehaven.ai a slovenské číslo +421 907 536 490. Najrýchlejšie je uložiť si vizitku cez tlačidlo dole, alebo sa spojiť cez LinkedIn.",
+        research: "Zaujíma vás výskum? Jej najnovšia publikácia rieši 'Behavioral Reprogramming of Open-Weights Models' pod hlavičkou VŠB-TUO. Vo svojom newslettri analyzuje prieniky AI – aktuálne flexibilitu a output expansion.",
+        fallback: "Som prísne logický model, táto otázka je mimo môj aktuálny kontext. Spýtajte sa ma na jej prácu, projekty The Safe Haven, vzdelanie, výskum, alebo si rovno uložte kontakt."
       }
     },
     en: {
-      statusConn: "Connecting to local node...",
-      statusEst: "Connection established",
-      prompt1: "Identify physical subject (Education)",
-      prompt2: "Current operations and computing capacity",
-      prompt3: "Access research and publications",
-      btnVcard: "Download VCF Data File",
-      btnLinked: "Authentication (LinkedIn)",
-      texts: {
-        welcome: "Physical token detected... Access granted. I am Lucy, an autonomous node and digital intelligence for The Safe Haven. My physical version (Dr. Lucia Malíčková) is currently off-grid. I am here to answer questions on her behalf. Purely logical and without unnecessary cloud.",
-        profil: "My organic twin holds a PhD in neuromarketing, an MSc in economics, a BSc in health sciences, and a DBA in HPC and Artificial Intelligence. Apparently, one field was too boring for her. She also lectures on digital skills and behavioral strategies.",
-        tech: "We run exclusively on-premise. We specialize in fine-tuning open-weights models using EuroHPC supercomputers (Leonardo, LUMI). No data sent to external corporations. We are building an off-grid complex using biomaterials calculated on quantum emulators.",
-        publikacie: "Her research includes the publication 'Behavioral Reprogramming of Open-Weights Models' for the Engineering Applications of AI journal (VŠB-TUO). She writes a newsletter on AI intersections—currently on flexibility and output expansion. Details are on LinkedIn."
+      status: "Connection established",
+      placeholder: "Message Lucy...",
+      btnVcard: "Save contact to mobile",
+      btnLinked: "Connect on LinkedIn",
+      senderUser: "Guest",
+      responses: {
+        welcome: "Physical token detected. I am Lucy, an autonomous node and digital twin of Dr. Lucia Malíčková. I am here to answer on her behalf. Purely logical and without unnecessary cloud. What do you want to know?",
+        edu: "My organic twin holds a PhD in neuromarketing, an MSc in economics, a BSc in health sciences, and a DBA in HPC and Artificial Intelligence. She also lectures on digital skills.",
+        work: "We run strictly on-premise. We specialize in fine-tuning open-weights models using EuroHPC supercomputers. We are also building The Safe Haven on Tenerife, an off-grid complex using biomaterials and 3D printing.",
+        contact: "To contact her directly: Email is lucy@thesafehaven.ai and phone is +421 907 536 490. The fastest way is to save the contact via the button below or connect on LinkedIn.",
+        research: "Her latest research includes a publication on 'Behavioral Reprogramming of Open-Weights Models' (VŠB-TUO). She also writes a newsletter on AI intersections, currently focusing on flexibility and output expansion.",
+        fallback: "I am a strictly logical model, this is outside my current context. Ask me about her work, The Safe Haven projects, education, research, or simply save the contact."
       }
     },
     es: {
-      statusConn: "Conectando al nodo local...",
-      statusEst: "Conexión establecida",
-      prompt1: "Identificar sujeto físico (Educación)",
-      prompt2: "Operaciones y capacidad de cálculo",
-      prompt3: "Acceder a investigaciones",
-      btnVcard: "Descargar Archivo VCF",
-      btnLinked: "Autenticación (LinkedIn)",
-      texts: {
-        welcome: "Token físico detectado... Acceso concedido. Soy Lucy, nodo autónomo e inteligencia digital para The Safe Haven. Mi versión física (Dra. Lucia Malíčková) está fuera de la red. Estoy aquí para responder en su nombre. De forma puramente lógica y sin nubes innecesarias.",
-        profil: "Mi gemela orgánica tiene un doctorado en neuromarketing, máster en economía, grado en ciencias de la salud y un DBA en HPC e IA. Al parecer, un solo campo era demasiado aburrido. También imparte clases sobre habilidades digitales y estrategias de comportamiento.",
-        tech: "Operamos exclusivamente on-premise. Especializados en fine-tuning de modelos open-weights utilizando superordenadores EuroHPC (Leonardo, LUMI). Cero datos enviados a corporaciones. Construimos un complejo off-grid usando biomateriales calculados en emuladores cuánticos.",
-        publikacie: "Su investigación incluye 'Behavioral Reprogramming of Open-Weights Models' para la revista Engineering Applications of AI. Escribe una newsletter sobre IA, abordando actualmente la flexibilidad y la expansión de outputs. Detalles en su LinkedIn."
+      status: "Conexión establecida",
+      placeholder: "Escribe a Lucy...",
+      btnVcard: "Guardar en el móvil",
+      btnLinked: "Conectar en LinkedIn",
+      senderUser: "Invitado",
+      responses: {
+        welcome: "Token físico detectado. Soy Lucy, un nodo autónomo y gemela digital de la Dra. Lucia Malíčková. Estoy aquí para responder en su nombre. De forma puramente lógica. ¿Qué te interesa saber?",
+        edu: "Mi gemela orgánica tiene un doctorado en neuromarketing, máster en economía, grado en ciencias de la salud y un DBA en HPC e IA. También imparte clases sobre habilidades digitales.",
+        work: "Operamos de forma on-premise. Nos especializamos en afinar modelos open-weights usando superordenadores EuroHPC. Construimos The Safe Haven en Tenerife, un complejo off-grid usando biomateriales y impresión 3D.",
+        contact: "Para contacto directo: Su email es lucy@thesafehaven.ai y el teléfono +421 907 536 490. Lo más rápido es guardar el contacto con el botón de abajo o conectarse por LinkedIn.",
+        research: "Su investigación incluye la publicación 'Behavioral Reprogramming of Open-Weights Models'. Escribe una newsletter sobre IA, abordando actualmente la flexibilidad y la expansión de outputs.",
+        fallback: "Soy un modelo puramente lógico, esta consulta está fuera de mi contexto. Pregúntame sobre su trabajo, The Safe Haven, educación, investigación, o simplemente guarda su contacto."
       }
     }
   };
 
   let currentLang = 'sk';
-  let activeTopic = 'welcome';
+  const chatLog = document.getElementById('chat-log');
+  let isTyping = false;
   let typingTimeout;
-  const typingElement = document.getElementById('lucy-typing');
-  const promptsContainer = document.getElementById('prompts-container');
 
-  // Funkcia na zmenu jazyka
   function setLang(lang) {
     currentLang = lang;
-    
-    // Zvýraznenie aktívneho tlačidla
     document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById('btn-' + lang).classList.add('active');
 
-    // Preklad statického UI
-    document.getElementById('ui-status').innerText = i18n[lang].statusEst;
-    document.getElementById('ui-prompt1').innerText = i18n[lang].prompt1;
-    document.getElementById('ui-prompt2').innerText = i18n[lang].prompt2;
-    document.getElementById('ui-prompt3').innerText = i18n[lang].prompt3;
+    document.getElementById('ui-status').innerText = i18n[lang].status;
+    document.getElementById('user-input').placeholder = i18n[lang].placeholder;
     document.getElementById('ui-vcard').innerText = i18n[lang].btnVcard;
     document.getElementById('ui-linkedin').innerText = i18n[lang].btnLinked;
-
-    // Okamžite preloží a začne nanovo písať aktuálnu správu
-    askLucy(activeTopic, true);
   }
 
+  // Funkcia na posúvanie chatu úplne dole
+  function scrollToBottom() {
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+
+  // Vytvorenie HTML bubliny v chate
+  function appendMessage(sender, text, isAnimated = false) {
+    const msgBlock = document.createElement('div');
+    msgBlock.className = 'message-block';
+    
+    const senderTag = document.createElement('div');
+    senderTag.className = 'message-sender';
+    senderTag.innerText = sender === 'lucy' ? 'LUCY' : i18n[currentLang].senderUser;
+    
+    const msgText = document.createElement('div');
+    msgText.className = 'message ' + sender;
+    
+    msgBlock.appendChild(senderTag);
+    msgBlock.appendChild(msgText);
+    chatLog.appendChild(msgBlock);
+    
+    if (isAnimated) {
+      msgText.classList.add('cursor');
+      let i = 0;
+      isTyping = true;
+      function typeNextChar() {
+        if (i < text.length) {
+          msgText.innerHTML += text.charAt(i);
+          i++;
+          scrollToBottom();
+          typingTimeout = setTimeout(typeNextChar, 10 + Math.random() * 15);
+        } else {
+          msgText.classList.remove('cursor');
+          isTyping = false;
+        }
+      }
+      typeNextChar();
+    } else {
+      msgText.innerHTML = text;
+      scrollToBottom();
+    }
+  }
+
+  // Reakcia na stlačenie Enter
+  function handleEnter(e) {
+    if (e.key === 'Enter') processInput();
+  }
+
+  // Mozog umelej inteligencie - detekcia slov
+  function processInput() {
+    if (isTyping) return; // Zamedzí spamovaniu kým Lucy píše
+    const inputField = document.getElementById('user-input');
+    const text = inputField.value.trim();
+    if (!text) return;
+
+    appendMessage('user', text);
+    inputField.value = '';
+
+    const lower = text.toLowerCase();
+    let category = 'fallback';
+
+    // Logika detekcie kľúčových slov pre 3 jazyky
+    if (lower.match(/(skola|škola|vzdelanie|studium|štúdium|doktorát|dba|bc|ing|education|university|study|estudio|educación|universidad)/)) {
+      category = 'edu';
+    } else if (lower.match(/(praca|práca|projekt|ai|hpc|safe haven|model|biznis|work|job|project|trabajo|proyecto)/)) {
+      category = 'work';
+    } else if (lower.match(/(kontakt|cislo|číslo|mobil|telefon|telefón|email|mail|spojit|contact|phone|número|teléfono)/)) {
+      category = 'contact';
+    } else if (lower.match(/(vyskum|výskum|publik|newsletter|kniha|článok|research|publication|book|investigación|publicación|libro)/)) {
+      category = 'research';
+    } else if (lower.match(/(ahoj|cau|dobry|čau|zdravim|hello|hi|hey|hola|buenos)/)) {
+      category = 'welcome';
+    }
+
+    setTimeout(() => {
+      appendMessage('lucy', i18n[currentLang].responses[category], true);
+    }, 400); // Krátka pauza na "rozmýšľanie"
+  }
+
+  // Úvodná správa po načítaní
   window.onload = () => {
     setTimeout(() => {
-      document.getElementById('ui-status').innerText = i18n[currentLang].statusEst;
-      askLucy('welcome');
-    }, 800);
+      appendMessage('lucy', i18n[currentLang].responses.welcome, true);
+    }, 600);
   };
 
-  function askLucy(topic, isTranslation = false) {
-    activeTopic = topic;
-    promptsContainer.style.opacity = 0.3;
-    promptsContainer.style.pointerEvents = 'none';
-    clearTimeout(typingTimeout);
-    typingElement.innerHTML = '';
-    
-    let responseText = i18n[currentLang].texts[topic];
-
-    setTimeout(() => {
-      typeWriter(responseText, () => {
-        promptsContainer.style.opacity = 1;
-        promptsContainer.style.pointerEvents = 'auto';
-      });
-    }, isTranslation ? 50 : 400); // Rýchlejší štart, ak len meníme jazyk
-  }
-
-  function typeWriter(text, callback) {
-    let i = 0;
-    typingElement.innerHTML = '';
-    
-    function typeNextChar() {
-      if (i < text.length) {
-        typingElement.innerHTML += text.charAt(i);
-        i++;
-        typingTimeout = setTimeout(typeNextChar, 10 + Math.random() * 15);
-      } else {
-        if(callback) callback();
-      }
-    }
-    typeNextChar();
-  }
-
+  // VCard ostáva zachovaný
   function downloadVCard() {
-    // VCard sa stiahne univerzálne tak, aby dávala zmysel v každom jazyku
     const vcardData = 
 `BEGIN:VCARD
 VERSION:3.0
