@@ -2,6 +2,8 @@
 export const config = { runtime: 'edge', regions: ['fra1'] };
 
 const ALLOWED = ['open', 'vcard', 'linkedin', 'link'];
+// automatické prehliadače (náhľady Vercelu, vyhľadávače, testy) sa nepočítajú
+const BOTS = /bot|crawl|spider|headless|lighthouse|vercel|preview|monitor/i;
 
 export default async function handler(req) {
   if (req.method !== 'POST') return new Response(null, { status: 405 });
@@ -9,6 +11,7 @@ export default async function handler(req) {
   let body;
   try { body = await req.json(); } catch { return new Response(null, { status: 400 }); }
   if (!ALLOWED.includes(body.type)) return new Response(null, { status: 400 });
+  if (BOTS.test(req.headers.get('user-agent') || '')) return new Response(null, { status: 204 });
 
   await fetch(`${process.env.MIA_URL}/v1/event`, {
     method: 'POST',
