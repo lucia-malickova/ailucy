@@ -210,12 +210,24 @@
     }
 
     .btn:hover { color: #ffffff; border-color: #333333; }
+
+    /* UPOZORNENIE AI (AI Act) */
+    .notice {
+      flex-shrink: 0;
+      font-size: 0.55rem;
+      letter-spacing: 0.05em;
+      line-height: 1.6;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .notice a { color: var(--text-muted); text-decoration: underline; }
+    .notice a:hover { color: #ffffff; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  
+
   <div class="header">
     <div class="lang-switcher">
       <span class="lang-btn active" onclick="setLang('sk')" id="btn-sk">SK</span>
@@ -231,14 +243,19 @@
   <div class="avatar-interface">
     <div class="chat-log" id="chat-log"></div>
     <div class="input-area">
-      <input type="text" id="user-input" placeholder="Opýtaj sa na Luciu..." onkeypress="handleEnter(event)">
+      <input type="text" id="user-input" placeholder="Napíš správu pre AI Lucy..." maxlength="600" onkeypress="handleEnter(event)">
       <button onclick="processInput()">►</button>
     </div>
   </div>
 
   <div class="actions">
     <button class="btn" onclick="downloadVCard()" id="ui-vcard">Ulož vizitku do mobilu</button>
-    <a href="https://www.linkedin.com/in/lucia-malickova" target="_blank" class="btn" id="ui-linkedin">Spoj sa na LinkedIn</a>
+    <a href="https://www.linkedin.com/in/lucia-malickova" target="_blank" rel="noopener" class="btn" id="ui-linkedin" onclick="sendEvent('linkedin')">Spoj sa na LinkedIn</a>
+  </div>
+
+  <div class="notice">
+    <span id="ui-notice">Rozprávate sa s umelou inteligenciou, nie s Luciou osobne. AI beží na vlastnom hardvéri a môže sa mýliť.</span>
+    · <a href="privacy.html" id="ui-privacy">Ochrana súkromia</a>
   </div>
 
 </div>
@@ -250,18 +267,20 @@
       placeholder: "Napíš správu pre AI Lucy...",
       btnVcard: "Ulož vizitku do mobilu",
       btnLinked: "Spoj sa na LinkedIn",
+      notice: "Rozprávate sa s umelou inteligenciou, nie s Luciou osobne. AI beží na vlastnom hardvéri a môže sa mýliť.",
+      privacy: "Ochrana súkromia",
       senderUser: "Hosť",
       responses: {
-        welcome: "Detegovaný fyzický token. Som AI Lucy, digitálna dvojička Lucie Malíčkovej. Som tu, aby som zodpovedala vaše otázky v jej mene. Keďže som jej dvojička, viem o nej všetko – spýtajte sa na prácu, vzdelanie, vedecké publikácie alebo jej myšlienky. Čo vás zaujíma?",
-        personal: "Narodila sa 5. augusta 1988 v Poprade. Je vydatá a má 3 deti. Žije striedavo na Slovensku a na Tenerife. To je všetko, ďalšie súkromné detaily nie je potrebné rozvádzať.",
-        edu: "Má vedecký PhD. z behaviorálneho správania a profesný doktorát DBA z HPC a AI. Ďalej má inžiniersky titul z ekonómie, MSc. z neuromarketingu a bakalársky titul zo zdravotníckych vied.",
-        work: "Je predovšetkým vedec a výskumník. Založila Modelos Inteligencia Artificial a off-grid projekt The Safe Haven. Pracuje v Národnom superpočítačovom centre Slovenska a Českej republiky. Je tiež lektorkou inštitútu CEMI (predmety ako AI pre manažérov, AI v zdravotníctve, Digitálne zručnosti pre manažérov). Spoluvlastní aj rezort Villa Lucia v UNESCO zóne Banskej Štiavnice.",
-        safehaven: "The Safe Haven je jej vizionársky off-grid projekt na Tenerife. Prepája udržateľnosť, biomateriály, 3D tlačenú architektúru a vlastnú lokálnu umelú inteligenciu bežiacu absolútne nezávisle na cloudoch. Detaily nájdete na thesafehaven.ai.",
-        hobbies: "Jej veľkou vášňou je golf. V minulosti dokonca pôsobila ako prezidentka Slovenskej golfovej asociácie.",
-        research: "Publikuje v oblasti HPC, AI a Quantum computing. Najdôležitejšie práce sú 'Behavioral Reprogramming of Open-Weights Models' a výskum VQE. Kompletný zoznam jej prác nájdete na platforme ORCID.",
-        newsletter: "Jej myšlienky a postoje k prieniku AI a spoločnosti môžete čítať v jej LinkedIn newslettri. Aktuálne rozoberá témy ako 'output expansion', flexibilitu a schopnosť učiť sa. Odporúčam kliknúť dole na jej LinkedIn a prihlásiť sa na odber.",
-        contact: "Najrýchlejší spôsob, ako ju zastihnúť: Email je lucy@thesafehaven.ai a slovenské číslo +421 907 536 490. Uložte si jej vizitku cez tlačidlo pod chatom, alebo sa spojte cez LinkedIn.",
-        fallback: "Na toto presnú odpoveď nemám. Ak chcete vedieť bližšie informácie o jej výskume, projektoch alebo myšlienkach, pozrite si stránku thesafehaven.ai, prejdite na jej LinkedIn, alebo si uložte kontakt a napíšte jej priamo."
+        welcome: "Ahoj, som AI Lucy – digitálna dvojička Lucie Malíčkovej. Odpovedám v prvej osobe, ale som umelá inteligencia, nie Lucia osobne. Rada vám porozprávam o svojej práci, výskume a projektoch ako The Safe Haven, Lucy AI či MIA. Čo vás ku mne priviedlo?",
+        personal: "Narodila som sa 5. augusta 1988 v Poprade. Som vydatá a mám 3 deti. Žijem striedavo na Slovensku a na Tenerife. Ďalšie súkromné detaily si nechám pre seba.",
+        edu: "Mám vedecký PhD. z behaviorálneho správania a profesný doktorát DBA z HPC a AI. Ďalej inžiniersky titul z ekonómie, MSc. z neuromarketingu a bakalársky titul zo zdravotníckych vied.",
+        work: "Som predovšetkým vedkyňa a výskumníčka. Založila som Modelos Inteligencia Artificial a off-grid projekt The Safe Haven. Pracujem v Národnom superpočítačovom centre Slovenska a Českej republiky a učím na inštitúte CEMI (AI pre manažérov, AI v zdravotníctve, Digitálne zručnosti pre manažérov). Spoluvlastním aj rezort Villa Lucia v UNESCO zóne Banskej Štiavnice.",
+        safehaven: "The Safe Haven je môj vizionársky off-grid projekt na Tenerife. Prepája udržateľnosť, biomateriály, 3D tlačenú architektúru a vlastnú lokálnu umelú inteligenciu bežiacu nezávisle od cloudov. Viac nájdete na thesafehaven.ai.",
+        hobbies: "Mojou veľkou vášňou je golf. V minulosti som bola dokonca prezidentkou Slovenskej golfovej asociácie.",
+        research: "Publikujem v oblasti HPC, AI a kvantového počítania. Najdôležitejšie sú práce 'Behavioral Reprogramming of Open-Weights Models' a výskum VQE. Kompletný zoznam mojich prác nájdete na ORCID.",
+        newsletter: "Svoje myšlienky o prieniku AI a spoločnosti píšem v newslettri na LinkedIn. Aktuálne o 'output expansion', flexibilite a schopnosti učiť sa. Kliknite dole na LinkedIn a prihláste sa na odber.",
+        contact: "Najrýchlejšie ma zastihnete na lucy@thesafehaven.ai alebo na čísle +421 907 536 490. Kontakt si môžete uložiť tlačidlom pod chatom alebo sa spojiť cez LinkedIn.",
+        fallback: "Na toto vám teraz presnú odpoveď nedám. Pozrite si thesafehaven.ai, môj LinkedIn, alebo si uložte kontakt a napíšte mi priamo."
       }
     },
     en: {
@@ -269,18 +288,20 @@
       placeholder: "Message AI Lucy...",
       btnVcard: "Save contact to mobile",
       btnLinked: "Connect on LinkedIn",
+      notice: "You are talking to an artificial intelligence, not to Lucia in person. The AI runs on its own hardware and can make mistakes.",
+      privacy: "Privacy",
       senderUser: "Guest",
       responses: {
-        welcome: "Physical token detected. I am AI Lucy, the digital twin of Dr. Lucia Malíčková. I am here to answer on her behalf. Knowing her perfectly, you can ask me about her work, education, research publications, or thoughts. What interests you?",
-        personal: "She was born on August 5, 1988, in Poprad. She is married and has 3 children. She divides her time between Slovakia and Tenerife. That covers the private life basics.",
-        edu: "She holds a scientific PhD in behavioral science, a professional DBA in HPC and AI, a Master's (Ing.) in economics, an MSc in neuromarketing, and a BSc in health sciences.",
-        work: "She is primarily a scientist and researcher. Founder of Modelos Inteligencia Artificial and The Safe Haven. She works at the National Supercomputing Centres of Slovakia and the Czech Republic. She is a lecturer at the CEMI institute (AI for managers, Digital skills). She also co-owns Villa Lucia in the UNESCO zone of Banská Štiavnica.",
-        safehaven: "The Safe Haven is her off-grid project on Tenerife, combining sustainability, biomaterials, 3D printing, and sovereign local AI. Find out more at thesafehaven.ai.",
-        hobbies: "Her main hobby is golf. In the past, she served as the President of the Slovak Golf Association.",
-        research: "She publishes in HPC, AI, and Quantum computing. Key papers include 'Behavioral Reprogramming of Open-Weights Models' and VQE research. Find her complete works on ORCID.",
-        newsletter: "She publishes her thoughts on AI and society in her LinkedIn newsletter, discussing 'output expansion', flexibility, and learning ability. Check her LinkedIn profile to read it.",
-        contact: "To contact her: Email lucy@thesafehaven.ai or call +421 907 536 490. Save the contact via the button below or connect on LinkedIn.",
-        fallback: "I don't have an exact answer for that. For more detailed information, please visit thesafehaven.ai, check her LinkedIn, or save her contact to ask her directly."
+        welcome: "Hi, I am AI Lucy – the digital twin of Dr. Lucia Malíčková. I answer in the first person, but I am an artificial intelligence, not Lucia herself. I am happy to tell you about my work, research and projects such as The Safe Haven, Lucy AI or MIA. What brings you here?",
+        personal: "I was born on August 5, 1988, in Poprad. I am married and have 3 children. I divide my time between Slovakia and Tenerife. The rest of my private life I keep to myself.",
+        edu: "I hold a scientific PhD in behavioral science, a professional DBA in HPC and AI, a Master's (Ing.) in economics, an MSc in neuromarketing and a BSc in health sciences.",
+        work: "I am primarily a scientist and researcher. I founded Modelos Inteligencia Artificial and The Safe Haven. I work at the National Supercomputing Centres of Slovakia and the Czech Republic and lecture at the CEMI institute (AI for managers, Digital skills). I also co-own Villa Lucia in the UNESCO zone of Banská Štiavnica.",
+        safehaven: "The Safe Haven is my off-grid project on Tenerife, combining sustainability, biomaterials, 3D-printed architecture and sovereign local AI. Find out more at thesafehaven.ai.",
+        hobbies: "My main passion is golf. I even served as President of the Slovak Golf Association.",
+        research: "I publish in HPC, AI and quantum computing. Key papers include 'Behavioral Reprogramming of Open-Weights Models' and my VQE research. My complete works are on ORCID.",
+        newsletter: "I share my thoughts on AI and society in my LinkedIn newsletter, currently about 'output expansion', flexibility and the ability to learn. Check my LinkedIn profile to subscribe.",
+        contact: "The fastest way to reach me: lucy@thesafehaven.ai or +421 907 536 490. Save my contact with the button below or connect on LinkedIn.",
+        fallback: "I don't have an exact answer for that right now. Please visit thesafehaven.ai, my LinkedIn, or save my contact and write to me directly."
       }
     },
     es: {
@@ -288,18 +309,20 @@
       placeholder: "Escribe a AI Lucy...",
       btnVcard: "Guardar contacto",
       btnLinked: "Conectar en LinkedIn",
+      notice: "Estás hablando con una inteligencia artificial, no con Lucia en persona. La IA funciona en hardware propio y puede equivocarse.",
+      privacy: "Privacidad",
       senderUser: "Invitado",
       responses: {
-        welcome: "Token físico detectado. Soy AI Lucy, la gemela digital de la Dra. Lucia Malíčková. Estoy aquí para responder en su nombre. Lo sé todo sobre ella; pregúntame sobre su trabajo, educación, publicaciones o ideas. ¿Qué te interesa?",
-        personal: "Nació el 5 de agosto de 1988 en Poprad. Está casada y tiene 3 hijos. Vive entre Eslovaquia y Tenerife. Esos son todos los detalles privados que compartimos.",
-        edu: "Tiene un doctorado en ciencias del comportamiento, un DBA en HPC e IA, un máster en economía, un MSc en neuromarketing y un grado en ciencias de la salud.",
-        work: "Es científica e investigadora. Fundadora de Modelos Inteligencia Artificial y The Safe Haven. Trabaja en los Centros Nacionales de Supercomputación de Eslovaquia y Chequia. Es profesora en el instituto CEMI (IA para directivos). También es copropietaria de Villa Lucia en Banská Štiavnica (UNESCO).",
-        safehaven: "The Safe Haven es su proyecto off-grid en Tenerife, que combina sostenibilidad, impresión 3D y una IA local soberana. Más detalles en thesafehaven.ai.",
-        hobbies: "Su afición principal es el golf. Fue presidenta de la Asociación Eslovaca de Golf.",
-        research: "Publica sobre HPC, IA y computación cuántica. Trabajos clave: 'Behavioral Reprogramming of Open-Weights Models' e investigación VQE. Su historial completo está en ORCID.",
-        newsletter: "Comparte sus reflexiones sobre IA y sociedad en su newsletter de LinkedIn, analizando la 'expansión de outputs' y la flexibilidad. Te sugiero leerlo en su perfil.",
-        contact: "Para contactarla: Email lucy@thesafehaven.ai, teléfono +421 907 536 490. Puedes guardar el contacto con el botón inferior o conectarte por LinkedIn.",
-        fallback: "No tengo la respuesta exacta a eso. Para más detalles, visita thesafehaven.ai, su LinkedIn, o guarda su contacto para escribirle directamente."
+        welcome: "Hola, soy AI Lucy, la gemela digital de la Dra. Lucia Malíčková. Respondo en primera persona, pero soy una inteligencia artificial, no Lucia en persona. Te cuento con gusto sobre mi trabajo, investigación y proyectos como The Safe Haven, Lucy AI o MIA. ¿Qué te trae por aquí?",
+        personal: "Nací el 5 de agosto de 1988 en Poprad. Estoy casada y tengo 3 hijos. Vivo entre Eslovaquia y Tenerife. El resto de mi vida privada me lo guardo.",
+        edu: "Tengo un doctorado en ciencias del comportamiento, un DBA en HPC e IA, un máster en economía, un MSc en neuromarketing y un grado en ciencias de la salud.",
+        work: "Soy científica e investigadora. Fundé Modelos Inteligencia Artificial y The Safe Haven. Trabajo en los Centros Nacionales de Supercomputación de Eslovaquia y Chequia y soy profesora en el instituto CEMI (IA para directivos). También soy copropietaria de Villa Lucia en Banská Štiavnica (UNESCO).",
+        safehaven: "The Safe Haven es mi proyecto off-grid en Tenerife, que combina sostenibilidad, biomateriales, arquitectura impresa en 3D y una IA local soberana. Más detalles en thesafehaven.ai.",
+        hobbies: "Mi gran pasión es el golf. Incluso fui presidenta de la Asociación Eslovaca de Golf.",
+        research: "Publico sobre HPC, IA y computación cuántica. Trabajos clave: 'Behavioral Reprogramming of Open-Weights Models' e investigación VQE. Mi historial completo está en ORCID.",
+        newsletter: "Comparto mis reflexiones sobre IA y sociedad en mi newsletter de LinkedIn, ahora sobre la 'expansión de outputs', la flexibilidad y la capacidad de aprender. Te sugiero leerlo en mi perfil.",
+        contact: "Para contactarme: lucy@thesafehaven.ai o +421 907 536 490. Puedes guardar mi contacto con el botón inferior o conectar por LinkedIn.",
+        fallback: "Ahora mismo no tengo la respuesta exacta. Visita thesafehaven.ai, mi LinkedIn, o guarda mi contacto y escríbeme directamente."
       }
     }
   };
@@ -307,10 +330,17 @@
   let currentLang = 'sk';
   const chatLog = document.getElementById('chat-log');
   let isTyping = false;
-  let typingTimeout;
+
+  // Anonymný identifikátor len pre túto návštevu (neukladá sa do prehliadača)
+  const session = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Math.random()).slice(2);
+  // Z ktorého tokenu / kampane návštevník prišiel, napr. ailucy.es/?t=websummit
+  const card = (new URLSearchParams(location.search).get('t') || 'web').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 32) || 'web';
+  // História rozhovoru pre AI (len v pamäti tejto stránky)
+  const history = [];
 
   function setLang(lang) {
     currentLang = lang;
+    document.documentElement.lang = lang;
     document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById('btn-' + lang).classList.add('active');
 
@@ -318,63 +348,59 @@
     document.getElementById('user-input').placeholder = i18n[lang].placeholder;
     document.getElementById('ui-vcard').innerText = i18n[lang].btnVcard;
     document.getElementById('ui-linkedin').innerText = i18n[lang].btnLinked;
+    document.getElementById('ui-notice').innerText = i18n[lang].notice;
+    document.getElementById('ui-privacy').innerText = i18n[lang].privacy;
   }
 
   function scrollToBottom() {
     chatLog.scrollTop = chatLog.scrollHeight;
   }
 
-  function appendMessage(sender, text, isAnimated = false) {
+  // Vytvorí bublinu správy a vráti element s textom
+  function createMessage(sender) {
     const msgBlock = document.createElement('div');
     msgBlock.className = 'message-block';
-    
+
     const senderTag = document.createElement('div');
     senderTag.className = 'message-sender';
     senderTag.innerText = sender === 'lucy' ? 'AI LUCY' : i18n[currentLang].senderUser;
-    
+
     const msgText = document.createElement('div');
     msgText.className = 'message ' + sender;
-    
+
     msgBlock.appendChild(senderTag);
     msgBlock.appendChild(msgText);
     chatLog.appendChild(msgBlock);
-    
-    if (isAnimated) {
+    scrollToBottom();
+    return msgText;
+  }
+
+  // Predstierané písanie pre pevné texty (uvítanie, záložné odpovede)
+  function typeText(msgText, text) {
+    return new Promise(resolve => {
       msgText.classList.add('cursor');
       let i = 0;
-      isTyping = true;
       function typeNextChar() {
         if (i < text.length) {
-          msgText.innerHTML += text.charAt(i);
+          msgText.textContent += text.charAt(i);
           i++;
           scrollToBottom();
-          typingTimeout = setTimeout(typeNextChar, 10 + Math.random() * 15);
+          setTimeout(typeNextChar, 10 + Math.random() * 15);
         } else {
           msgText.classList.remove('cursor');
-          isTyping = false;
+          resolve();
         }
       }
       typeNextChar();
-    } else {
-      msgText.innerHTML = text;
-      scrollToBottom();
-    }
+    });
   }
 
   function handleEnter(e) {
     if (e.key === 'Enter') processInput();
   }
 
-  // Detekcia kľúčových slov vo všetkých 3 jazykoch
-  function processInput() {
-    if (isTyping) return; 
-    const inputField = document.getElementById('user-input');
-    const text = inputField.value.trim();
-    if (!text) return;
-
-    appendMessage('user', text);
-    inputField.value = '';
-
+  // Záloha: pôvodná detekcia kľúčových slov, keď AI na Macu nie je dostupná
+  function keywordAnswer(text) {
     const lower = text.toLowerCase();
     let category = 'fallback';
 
@@ -397,20 +423,108 @@
     } else if (lower.match(/(ahoj|cau|dobry|čau|zdravim|hello|hi|hey|hola|buenos)/)) {
       category = 'welcome';
     }
+    return i18n[currentLang].responses[category];
+  }
 
-    setTimeout(() => {
-      appendMessage('lucy', i18n[currentLang].responses[category], true);
-    }, 400);
+  // Odpoveď z AI Lucy na vlastnom hardvéri, text pribúda naživo
+  async function askAI(msgText) {
+    const ctrl = new AbortController();
+    // ak do 15 s nepríde prvé slovo, použije sa záloha
+    let timer = setTimeout(() => ctrl.abort(), 15000);
+    let answer = '';
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history, lang: currentLang, card, session }),
+        signal: ctrl.signal,
+      });
+      if (!res.ok || !res.body) throw new Error('AI nedostupná');
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+      msgText.classList.add('cursor');
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const parts = buf.split('\n\n');
+        buf = parts.pop();
+        for (const part of parts) {
+          const line = part.trim();
+          if (!line.startsWith('data:')) continue;
+          const data = line.slice(5).trim();
+          if (data === '[DONE]') continue;
+          const t = JSON.parse(data).t || '';
+          if (t && timer) { clearTimeout(timer); timer = null; }
+          answer += t;
+          msgText.textContent = answer;
+          scrollToBottom();
+        }
+      }
+      msgText.classList.remove('cursor');
+      if (!answer) throw new Error('prázdna odpoveď');
+      return answer;
+    } catch (e) {
+      if (timer) clearTimeout(timer);
+      msgText.classList.remove('cursor');
+      // ak už časť odpovede prišla, necháme ju tak
+      if (answer) return answer;
+      throw e;
+    }
+  }
+
+  async function processInput() {
+    if (isTyping) return;
+    const inputField = document.getElementById('user-input');
+    const text = inputField.value.trim();
+    if (!text) return;
+
+    isTyping = true;
+    createMessage('user').textContent = text;
+    inputField.value = '';
+    history.push({ role: 'user', content: text });
+
+    const msgText = createMessage('lucy');
+    let answer;
+    try {
+      answer = await askAI(msgText);
+    } catch (e) {
+      answer = keywordAnswer(text);
+      msgText.textContent = '';
+      await typeText(msgText, answer);
+    }
+    history.push({ role: 'assistant', content: answer });
+    isTyping = false;
+  }
+
+  // Anonymná udalosť pre analytiku (otvorenie, uloženie vizitky, LinkedIn)
+  function sendEvent(type) {
+    try {
+      fetch('/api/event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, card, session }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch (e) {}
   }
 
   window.onload = () => {
-    setTimeout(() => {
-      appendMessage('lucy', i18n[currentLang].responses.welcome, true);
+    sendEvent('open');
+    setTimeout(async () => {
+      isTyping = true;
+      const welcome = i18n[currentLang].responses.welcome;
+      await typeText(createMessage('lucy'), welcome);
+      history.push({ role: 'assistant', content: welcome });
+      isTyping = false;
     }, 600);
   };
 
   function downloadVCard() {
-    const vcardData = 
+    sendEvent('vcard');
+    const vcardData =
 `BEGIN:VCARD
 VERSION:3.0
 N:Malíčková;Lucia;Dr.;;
